@@ -1,0 +1,452 @@
+[
+  {
+    "slug": "1nes-and-zer0s",
+    "title": "1nes and zer0s",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:03:22",
+    "src": "/audio/1nes-and-zer0s.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "3-years-1-month-1-day",
+    "title": "3 years 1 month 1 day",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:05:06",
+    "src": "/audio/3-years-1-month-1-day.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "antidote",
+    "title": "Antidote",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 1,
+    "duration": "00:03:11",
+    "src": "/audio/Antidote.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "bad-taste",
+    "title": "Bad Taste",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:01:40",
+    "src": "/audio/Bad-Taste.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "better-when-i-m-broken",
+    "title": "Better when i'm broken",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 2,
+    "duration": "00:03:03",
+    "src": "/audio/Better-when-i-m-broken.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "bobbi-bitch",
+    "title": "Bobbi bitch",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:04:26",
+    "src": "/audio/Bobbi-bitch.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "carefully",
+    "title": "Carefully",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 3,
+    "duration": "00:02:42",
+    "src": "/audio/Carefully.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "change-me",
+    "title": "Change me",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 7,
+    "duration": "00:03:33",
+    "src": "/audio/Change-me.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "checkmate",
+    "title": "Checkmate",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 8,
+    "duration": "00:03:34",
+    "src": "/audio/Checkmate.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "codeine-confessions",
+    "title": "Codeine Confessions",
+    "albumSlug": "misery-motel",
+    "albumTitle": "Misery Motel",
+    "trackNumber": 1,
+    "duration": "00:03:06",
+    "src": "/audio/Codeine-Confessions.mp3",
+    "cover": "misery-motel"
+  },
+  {
+    "slug": "cold-out-here",
+    "title": "Cold out here",
+    "albumSlug": "misery-motel",
+    "albumTitle": "Misery Motel",
+    "trackNumber": 2,
+    "duration": "00:03:52",
+    "src": "/audio/Cold-out-here.mp3",
+    "cover": "misery-motel"
+  },
+  {
+    "slug": "curb-to-the-keys",
+    "title": "Curb to the keys",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:03:16",
+    "src": "/audio/Curb-to-the-Keys.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "daddy-s-regrets",
+    "title": "Daddy's Regrets",
+    "albumSlug": "trauma-and-shit",
+    "albumTitle": "Trauma & Shit",
+    "trackNumber": 2,
+    "duration": "00:05:44",
+    "src": "/audio/Daddy-s-Regrets.mp3",
+    "cover": "trauma-and-shit"
+  },
+  {
+    "slug": "devil-on-my-shoulder",
+    "title": "Devil on my shoulder",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 3,
+    "duration": "00:02:52",
+    "src": "/audio/Devil-on-my-shoulder.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "earned-this-life",
+    "title": "Earned this life",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 6,
+    "duration": "00:02:54",
+    "src": "/audio/Earned-this-life.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "everything",
+    "title": "Everything",
+    "albumSlug": "trauma-and-shit",
+    "albumTitle": "Trauma & Shit",
+    "trackNumber": 3,
+    "duration": "00:04:09",
+    "src": "/audio/Everything.mp3",
+    "cover": "trauma-and-shit"
+  },
+  {
+    "slug": "fragile-soldiers",
+    "title": "Fragile Soldiers",
+    "albumSlug": "trauma-and-shit",
+    "albumTitle": "Trauma & Shit",
+    "trackNumber": 4,
+    "duration": "00:04:19",
+    "src": "/audio/Fragile-soldiers.mp3",
+    "cover": "trauma-and-shit"
+  },
+  {
+    "slug": "from-the-grave",
+    "title": "From the grave",
+    "albumSlug": "trauma-and-shit",
+    "albumTitle": "Trauma & Shit",
+    "trackNumber": 5,
+    "duration": "00:03:46",
+    "src": "/audio/From-the-grave.mp3",
+    "cover": "trauma-and-shit"
+  },
+  {
+    "slug": "funeral",
+    "title": "Funeral",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 13,
+    "duration": "00:03:59",
+    "src": "/audio/Funeral.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "happiness",
+    "title": "Happiness",
+    "albumSlug": "misery-motel",
+    "albumTitle": "Misery Motel",
+    "trackNumber": 4,
+    "duration": "00:03:02",
+    "src": "/audio/Happiness.mp3",
+    "cover": "misery-motel"
+  },
+  {
+    "slug": "happy-birthday",
+    "title": "Happy Birthday",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 5,
+    "duration": "00:04:11",
+    "src": "/audio/Happy-Birthday.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "hate-you",
+    "title": "Hate you",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 1,
+    "duration": "00:03:22",
+    "src": "/audio/Hate-You.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "i-don-t-like-people-anymore",
+    "title": "I don't like people anymore",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 5,
+    "duration": "00:03:00",
+    "src": "/audio/I-Don-t-Like-People-Anymore.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "i-m-not-okay",
+    "title": "I'm not okay",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 4,
+    "duration": "00:03:52",
+    "src": "/audio/I-m-not-okay.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "let-me-fly",
+    "title": "Let me fly",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 9,
+    "duration": "00:04:02",
+    "src": "/audio/Let-me-fly.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "lonely",
+    "title": "Lonely",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 5,
+    "duration": "00:03:57",
+    "src": "/audio/Lonely.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "love-hate-thing",
+    "title": "Love hate thing",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 2,
+    "duration": "00:04:12",
+    "src": "/audio/Love-Hate-Thing.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "men-don-t-cry",
+    "title": "Men don't cry",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 1,
+    "duration": "00:02:57",
+    "src": "/audio/Men-don-t-cry.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "misconstrue",
+    "title": "Misconstrue",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 6,
+    "duration": "00:02:42",
+    "src": "/audio/Misconstrue.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "miss-me",
+    "title": "Miss me",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:03:28",
+    "src": "/audio/Miss-me.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "my-happy-ending",
+    "title": "My happy ending",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 4,
+    "duration": "00:03:39",
+    "src": "/audio/My-happy-ending.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "one-day",
+    "title": "One day",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 12,
+    "duration": "00:02:28",
+    "src": "/audio/One-day.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "paranoid",
+    "title": "Paranoid",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 11,
+    "duration": "00:03:53",
+    "src": "/audio/Paranoid.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "problems-on-problems",
+    "title": "Problems on problems",
+    "albumSlug": "singles",
+    "albumTitle": "Singles",
+    "trackNumber": null,
+    "duration": "00:02:48",
+    "src": "/audio/Problems-on-problems.mp3",
+    "cover": "singles"
+  },
+  {
+    "slug": "rehab",
+    "title": "Rehab",
+    "albumSlug": "trauma-and-shit",
+    "albumTitle": "Trauma & Shit",
+    "trackNumber": 7,
+    "duration": "00:03:06",
+    "src": "/audio/Rehab.mp3",
+    "cover": "trauma-and-shit"
+  },
+  {
+    "slug": "remember-me",
+    "title": "Remember me",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 2,
+    "duration": "00:03:06",
+    "src": "/audio/Remember-me.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "sadness",
+    "title": "Sadness",
+    "albumSlug": "misery-motel",
+    "albumTitle": "Misery Motel",
+    "trackNumber": 6,
+    "duration": "00:03:19",
+    "src": "/audio/Sadness.mp3",
+    "cover": "misery-motel"
+  },
+  {
+    "slug": "shoulda-knew-i-was-coming",
+    "title": "Shoulda knew I was coming",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 7,
+    "duration": "00:03:54",
+    "src": "/audio/Shoulda-knew-I-was-coming.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "sorry",
+    "title": "Sorry",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 8,
+    "duration": "00:03:37",
+    "src": "/audio/Sorry.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "still-yours-somehow",
+    "title": "Still yours somehow",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 7,
+    "duration": "00:02:43",
+    "src": "/audio/Still-yours-somehow.mp3",
+    "cover": "more-trauma-and-shit"
+  },
+  {
+    "slug": "tightrope",
+    "title": "Tightrope",
+    "albumSlug": "dead-flowers-still-bloom",
+    "albumTitle": "Dead Flowers Still Bloom",
+    "trackNumber": 1,
+    "duration": "00:04:11",
+    "src": "/audio/Tightrope.mp3",
+    "cover": "dead-flowers-still-bloom"
+  },
+  {
+    "slug": "today",
+    "title": "Today",
+    "albumSlug": "cloudy-with-a-chance",
+    "albumTitle": "Cloudy With a Chance",
+    "trackNumber": 4,
+    "duration": "00:03:23",
+    "src": "/audio/Today.mp3",
+    "cover": "cloudy-with-a-chance"
+  },
+  {
+    "slug": "we-ll-meet-again",
+    "title": "We'll meet again",
+    "albumSlug": "misery-motel",
+    "albumTitle": "Misery Motel",
+    "trackNumber": 7,
+    "duration": "00:04:39",
+    "src": "/audio/We-ll-meet-again.mp3",
+    "cover": "misery-motel"
+  },
+  {
+    "slug": "where-you-at",
+    "title": "Where you at",
+    "albumSlug": "trauma-and-shit",
+    "albumTitle": "Trauma & Shit",
+    "trackNumber": 9,
+    "duration": "00:05:27",
+    "src": "/audio/Where-you-at.mp3",
+    "cover": "trauma-and-shit"
+  },
+  {
+    "slug": "you-don-t-care",
+    "title": "You don't care",
+    "albumSlug": "more-trauma-and-shit",
+    "albumTitle": "More Trauma & Shit",
+    "trackNumber": 6,
+    "duration": "00:03:47",
+    "src": "/audio/You-don-t-care.mp3",
+    "cover": "more-trauma-and-shit"
+  }
+]

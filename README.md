@@ -105,16 +105,19 @@ Each builder agent receives the full component specification inline — exact `g
 
 ```
 src/
-  app/              # Next.js routes
-  components/       # React components
-    ui/             # shadcn/ui primitives
-    icons.tsx       # Extracted SVG icons
-  lib/utils.ts      # cn() utility
-  types/            # TypeScript interfaces
-  hooks/            # Custom React hooks
+  app/              # Routes and global styles
+  components/
+    home/           # Homepage sections
+    layout/         # Shared header, footer and logo
+    music/          # Album and song browsing components
+    shop/           # Supply shop page
+    ui/             # Shared UI primitives
+  content/          # Editable text, album and song catalogs
 public/
-  images/           # Downloaded images from target
-  videos/           # Downloaded videos from target
+  audio/            # Song files
+  fonts/            # Site fonts
+  images/           # Background, album art and shop images
+  videos/           # Site video assets
   seo/              # Favicons, OG images
 docs/
   research/         # Extraction output & component specs
@@ -126,6 +129,8 @@ docs/
 AGENTS.md           # Agent instructions (single source of truth)
 CLAUDE.md           # Claude Code config (imports AGENTS.md)
 ```
+
+For the Attikid-specific file map and guidance on changing copy, catalogs, assets and routes, see [docs/EDITING.md](docs/EDITING.md).
 
 ## Commands
 
