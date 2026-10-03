@@ -15,5 +15,5 @@ export const homeCopy = {
 export const footerCopy = {
   copyright: "© 2026 Attikid. All rights reserved",
   privacy: "Privacy Policy",
-  terms: "Terms & Conditions",
+  dcma: "DCMA",
 } as const;

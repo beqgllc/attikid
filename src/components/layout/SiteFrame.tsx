@@ -67,7 +67,7 @@ export function SiteFooter({
         <p className="ak-legal__links">
           <Link href="https://app.websitepolicies.com/policies/view/3yyoytb8">{footerCopy.privacy}</Link>
           <span aria-hidden="true"> | </span>
-          <Link href="https://app.websitepolicies.com/policies/view/e58g6wk9">{footerCopy.terms}</Link>
+          <Link href="https://app.websitepolicies.com/policies/view/e58g6wk9">{footerCopy.dcma}</Link>
         </p>
       </div>
       <Link className="ak-footer__side ak-footer__right" href={rightLink.href}>
