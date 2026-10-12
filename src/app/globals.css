@@ -629,32 +629,55 @@ a:focus-visible {
 }
 
 .ak-shop {
-  width: min(1440px, 100%);
+  --shop-border: #3d3d3d;
+  --shop-muted: #aaa;
+  --shop-panel: #0c0c0c;
+  width: min(1600px, 100%);
   margin: 0 auto;
-  padding: 24px clamp(22px, 3.8vw, 55px) 0;
+  padding: 24px clamp(22px, 4vw, 64px) 0;
   color: #f5f5f5;
+  background: #080808;
   font-family: var(--ak-font);
-  letter-spacing: 0.09em;
+  letter-spacing: 0.055em;
+}
+
+.ak-shop a {
+  text-decoration: none;
 }
 
 .ak-shop-header {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items: start;
-  min-height: 70px;
-  border-bottom: 1px solid #c3c3c366;
+  align-items: center;
+  min-height: 102px;
+  border-bottom: 1px solid var(--shop-border);
   font-size: 0.68rem;
   text-transform: uppercase;
 }
 
-.ak-shop-header > a:first-child,
-.ak-shop-header__cart {
-  padding-top: 2rem;
+.ak-shop-header__nav,
+.ak-shop-header__shop-link {
+  position: relative;
+  z-index: 3;
+  width: fit-content;
+  padding: 14px 0;
+  color: #ddd;
+  transition: color 180ms ease;
 }
 
-.ak-shop-header__cart {
+.ak-shop-header__shop-link {
   justify-self: end;
+}
+
+.ak-shop-header__shop-link span {
+  margin-left: 0.55rem;
+  color: var(--ak-accent);
+}
+
+.ak-shop-header__nav:hover,
+.ak-shop-header__shop-link:hover {
+  color: var(--ak-accent);
 }
 
 .ak-shop-header__brand {
@@ -664,32 +687,21 @@ a:focus-visible {
   z-index: 2;
   display: grid;
   justify-items: center;
-  gap: 0.8rem;
-  margin-top: 0;
-  padding: 0 0.4rem;
-  background: #050505;
+  gap: 0.55rem;
+  padding: 0.5rem 0.8rem;
+  background: #080808;
   transform: translateX(-50%);
 }
 
-.ak-shop-header__brand::before {
-  position: absolute;
-  z-index: -1;
-  top: 70px;
-  right: 100%;
-  width: 54px;
-  height: 44px;
-  background: #050505;
-  content: "";
-}
-
 .ak-shop-header__tagline {
-  font-size: 0.62rem;
+  color: #bdbdbd;
+  font-size: 0.58rem;
   letter-spacing: 0.22em;
 }
 
 .ak-shop-header__logo {
   display: block;
-  width: clamp(112px, 10vw, 148px);
+  width: clamp(112px, 10vw, 150px);
   height: auto;
   filter: brightness(0) invert(1);
 }
@@ -697,9 +709,10 @@ a:focus-visible {
 .ak-shop-hero {
   position: relative;
   display: block;
-  margin-inline: calc(-1 * clamp(22px, 3.8vw, 55px));
+  margin-inline: calc(-1 * clamp(22px, 4vw, 64px));
   overflow: hidden;
-  border-bottom: 1px solid #c3c3c366;
+  border-bottom: 1px solid var(--shop-border);
+  background: #111;
 }
 
 .ak-shop-hero__image {
@@ -710,187 +723,291 @@ a:focus-visible {
 
 .ak-shop-hero__cta {
   position: absolute;
-  z-index: 1;
-  top: 77%;
+  bottom: 7%;
   left: 4%;
-  width: 20.5%;
-  height: 5.5%;
-  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 2.6rem;
+  padding: 14px 18px;
+  border: 1px solid #f5f5f5a8;
+  color: #fff;
+  background: #080808d9;
+  font-size: clamp(0.55rem, 0.8vw, 0.73rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: border-color 180ms ease, background 180ms ease;
 }
 
-.ak-shop-hero__cta:focus-visible {
-  outline: 2px solid var(--ak-accent);
-  outline-offset: 2px;
+.ak-shop-hero__cta span:last-child {
+  color: var(--ak-accent);
+  font-size: 1rem;
+}
+
+.ak-shop-hero__cta:hover {
+  border-color: var(--ak-accent);
+  background: #080808;
+}
+
+.ak-shop-manifesto {
+  display: grid;
+  grid-template-columns: 0.8fr 2fr 0.35fr;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 5rem);
+  padding: clamp(2.6rem, 6vw, 5.5rem) 0;
+  border-bottom: 1px solid var(--shop-border);
+}
+
+.ak-shop-eyebrow {
+  margin: 0 0 0.7rem;
+  color: var(--ak-accent);
+  font-size: 0.61rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.ak-shop-manifesto > .ak-shop-eyebrow {
+  align-self: start;
+  margin-top: 0.4rem;
+}
+
+.ak-shop-manifesto__body h2 {
+  max-width: 850px;
+  margin: 0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(2.4rem, 6.7vw, 6.8rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.ak-shop-manifesto__body p {
+  max-width: 600px;
+  margin: 1rem 0 0;
+  color: #bdbdbd;
+  font-size: clamp(0.78rem, 1.15vw, 0.95rem);
+  letter-spacing: 0.025em;
+  line-height: 1.85;
+}
+
+.ak-shop-manifesto__mark {
+  justify-self: end;
+  color: #262626;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(1.5rem, 3.4vw, 3.5rem);
+  line-height: 0.82;
+  text-align: right;
 }
 
 .ak-shop-section {
-  margin-top: 1.8rem;
+  margin-top: clamp(2.8rem, 6vw, 5rem);
 }
 
 .ak-shop-section__heading {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   gap: 1rem;
-  margin-bottom: 0.8rem;
-  padding-bottom: 0.55rem;
-  border-bottom: 1px solid #c3c3c366;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--shop-border);
   text-transform: uppercase;
 }
 
-.ak-shop-section__heading h2,
-.ak-shop-section__heading span {
-  margin: 0;
-  font-size: clamp(0.62rem, 0.9vw, 0.85rem);
-  font-weight: 500;
-  letter-spacing: 0.18em;
+.ak-shop-section__heading .ak-shop-eyebrow {
+  margin-bottom: 0.45rem;
 }
 
-.ak-shop-section__heading span {
-  color: #b8b8b8;
-  font-size: 0.56rem;
+.ak-shop-section__heading h2 {
+  margin: 0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.ak-shop-section__heading > span {
+  max-width: 45%;
+  padding-bottom: 0.2rem;
+  color: var(--shop-muted);
+  font-size: 0.58rem;
+  letter-spacing: 0.13em;
+  line-height: 1.6;
   text-align: right;
 }
 
 .ak-collection-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.85rem;
+  gap: 0.9rem;
 }
 
 .ak-collection-card {
   min-width: 0;
-  border: 1px solid #85858577;
-  transition: border-color 180ms ease;
+  border: 1px solid #383838;
+  background: #0c0c0c;
+  transition: border-color 180ms ease, background 180ms ease;
 }
 
 .ak-collection-card:hover,
 .ak-collection-card:focus-visible {
   border-color: var(--ak-accent);
+  background: #111;
 }
 
 .ak-collection-card__image-wrap {
+  position: relative;
   overflow: hidden;
-  border-bottom: 1px solid #85858577;
-  aspect-ratio: 0.66;
+  border-bottom: 1px solid #383838;
+  aspect-ratio: 0.73;
+  background: #111;
 }
 
 .ak-collection-card__image {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 200ms ease;
+  transition: transform 350ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .ak-collection-card:hover .ak-collection-card__image {
-  transform: scale(1.035);
+  transform: scale(1.045);
+}
+
+.ak-collection-card__number {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  padding: 0.3rem 0.42rem;
+  border: 1px solid #ffffff70;
+  color: #f5f5f5;
+  background: #080808ac;
+  font-size: 0.52rem;
 }
 
 .ak-collection-card__copy {
-  padding: 0.6rem;
+  padding: 0.8rem;
 }
 
 .ak-collection-card__copy h3 {
-  margin: 0 0 0.3rem;
-  font-size: clamp(0.59rem, 0.78vw, 0.79rem);
+  margin: 0 0 0.45rem;
+  font-size: clamp(0.62rem, 0.8vw, 0.8rem);
   font-weight: 600;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .ak-collection-card__copy p {
-  min-height: 2.4em;
-  margin: 0 0 0.55rem;
-  color: #b8b8b8;
-  font-size: 0.5rem;
-  letter-spacing: 0.08em;
-  line-height: 1.6;
+  min-height: 2.8em;
+  margin: 0 0 0.85rem;
+  color: #aaa;
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  line-height: 1.65;
   text-transform: uppercase;
 }
 
 .ak-collection-card__copy > span {
   display: flex;
   justify-content: space-between;
-  font-size: 0.49rem;
-  text-transform: uppercase;
-}
-
-.ak-product-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.85rem;
-}
-
-.ak-product-card {
-  border: 1px solid #85858577;
-}
-
-.ak-product-card__image-wrap {
-  overflow: hidden;
-  border-bottom: 1px solid #85858577;
-  aspect-ratio: 1.14;
-  background: #0a0a0a88;
-}
-
-.ak-product-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 200ms ease;
-}
-
-.ak-product-card:hover .ak-product-card__image {
-  transform: scale(1.035);
-}
-
-.ak-product-card__details {
-  padding: 0.62rem;
-}
-
-.ak-product-card__details h3,
-.ak-accessory h3 {
-  margin: 0;
-  font-size: 0.61rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.ak-product-card__details p,
-.ak-accessory p {
-  margin: 0.35rem 0 0.6rem;
-  color: #b8b8b8;
-  font-size: 0.52rem;
-  text-transform: uppercase;
-}
-
-.ak-product-card__details button {
-  width: 100%;
-  min-height: 30px;
-  border: 1px solid #929292;
-  color: #c6c6c6;
-  background: transparent;
-  font: inherit;
-  font-size: 0.48rem;
+  align-items: center;
+  padding-top: 0.65rem;
+  border-top: 1px solid #333;
+  font-size: 0.51rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.ak-product-card__details button:disabled {
-  cursor: not-allowed;
-  opacity: 0.68;
+.ak-collection-card__copy > span span {
+  color: var(--ak-accent);
+  font-size: 0.9rem;
+}
+
+.ak-shop-section--products {
+  padding: clamp(1rem, 2vw, 1.8rem);
+  border: 1px solid #333;
+  background: #090909;
+}
+
+.ak-shopify-products {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.ak-shopify-product {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.ak-shopify-product__index {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--shop-border);
+  color: var(--ak-accent);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 1.5rem;
+}
+
+.ak-shopify-product__embed {
+  min-width: 0;
+  min-height: 190px;
+  border-top: 1px solid var(--shop-border);
+  color: #f5f5f5;
+}
+
+.ak-shopify-loading {
+  display: inline-block;
+  padding: 1.5rem 0;
+  color: #a6a6a6;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ak-shopify-error {
+  margin: 1rem 0 0;
+  padding: 1rem;
+  border: 1px solid #7c3b21;
+  color: #f3d6c9;
+  font-size: 0.76rem;
+  line-height: 1.7;
+}
+
+.ak-shopify-error a {
+  color: #ff865b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ak-shop-product-note {
+  margin: 1.2rem 0 0;
+  color: #9a9a9a;
+  font-size: 0.62rem;
+  letter-spacing: 0.045em;
+  line-height: 1.7;
 }
 
 .ak-accessory-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid #85858577;
-  border-bottom: 1px solid #85858577;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
 }
 
 .ak-accessory {
+  position: relative;
   min-width: 0;
-  padding: 1rem;
-  border-right: 1px solid #85858577;
+  padding: 1.4rem 1rem 1.2rem;
+  border-right: 1px solid #333;
   text-align: center;
 }
 
@@ -900,45 +1017,89 @@ a:focus-visible {
 
 .ak-accessory__image {
   display: block;
-  width: min(100%, 150px);
-  height: 105px;
-  margin: 0 auto 0.55rem;
+  width: min(100%, 160px);
+  height: 120px;
+  margin: 0 auto 0.9rem;
   object-fit: contain;
+  transition: transform 200ms ease;
+}
+
+.ak-accessory:hover .ak-accessory__image {
+  transform: translateY(-3px);
+}
+
+.ak-accessory__number {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--ak-accent);
+  font-size: 0.52rem;
+}
+
+.ak-accessory h3 {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ak-accessory p {
+  margin: 0.45rem 0 0;
+  color: #909090;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .ak-shop-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1.6rem;
-  padding: 1.2rem 0 1.5rem;
-  border-top: 1px solid #c3c3c366;
-  font-size: 0.62rem;
+  gap: 1rem;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding: 1.5rem 0 1.8rem;
+  border-top: 1px solid #3a3a3a;
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
+}
+
+.ak-shop-footer > a {
+  color: #e3e3e3;
+  transition: color 180ms ease;
+}
+
+.ak-shop-footer > a:hover {
+  color: var(--ak-accent);
 }
 
 .ak-shop-footer__center {
   display: grid;
   justify-items: center;
-  gap: 0.35rem;
-  font-size: 0.48rem;
+  gap: 0.4rem;
+  font-size: 0.49rem;
   text-align: center;
 }
 
 .ak-shop-footer__center strong {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 1.4rem;
-  line-height: 1;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 1.55rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 0.95;
 }
 
 .ak-shop-footer__center small {
   display: block;
-  font-size: 0.6rem;
+  font-family: var(--ak-font);
+  font-size: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
 }
 
 .ak-shop-footer__center span {
-  color: #c8c8c8;
-  letter-spacing: 0.14em;
+  color: #a8a8a8;
+  letter-spacing: 0.12em;
 }
 
 @media (min-width: 701px) and (max-width: 1050px) {
@@ -1193,5 +1354,227 @@ a:focus-visible {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* K!D Supply Co. storefront responsive finishing */
+@media (max-width: 1050px) {
+  .ak-shop-manifesto {
+    grid-template-columns: 0.8fr 2.5fr;
+  }
+
+  .ak-shop-manifesto__mark {
+    display: none;
+  }
+
+  .ak-collection-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ak-collection-card__copy h3 {
+    font-size: 0.76rem;
+  }
+
+  .ak-collection-card__copy p,
+  .ak-collection-card__copy > span {
+    font-size: 0.56rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .ak-shop {
+    padding: 15px 4vw 0;
+  }
+
+  .ak-shop-header {
+    grid-template-columns: 1fr 1fr;
+    min-height: 112px;
+    align-items: start;
+  }
+
+  .ak-shop-header__nav {
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: 1rem;
+  }
+
+  .ak-shop-header__shop-link {
+    grid-column: 2;
+    grid-row: 1;
+    padding-top: 1rem;
+  }
+
+  .ak-shop-header__brand {
+    position: relative;
+    top: auto;
+    left: auto;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+    padding: 0.15rem 0.6rem 0.35rem;
+    transform: none;
+  }
+
+  .ak-shop-header__tagline {
+    font-size: 0.52rem;
+  }
+
+  .ak-shop-header__logo {
+    width: 105px;
+  }
+
+  .ak-shop-hero {
+    margin-inline: -4vw;
+  }
+
+  .ak-shop-hero__cta {
+    bottom: 5%;
+    left: 4%;
+    gap: 1.25rem;
+    padding: 9px 10px;
+    font-size: 0.48rem;
+  }
+
+  .ak-shop-manifesto {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    padding: 2.1rem 0 2.4rem;
+  }
+
+  .ak-shop-manifesto > .ak-shop-eyebrow {
+    margin: 0;
+  }
+
+  .ak-shop-manifesto__body h2 {
+    font-size: clamp(2.6rem, 13vw, 4.2rem);
+  }
+
+  .ak-shop-manifesto__body p {
+    margin-top: 0.8rem;
+    font-size: 0.78rem;
+  }
+
+  .ak-shop-section {
+    margin-top: 2.8rem;
+  }
+
+  .ak-shop-section__heading {
+    align-items: start;
+    margin-bottom: 0.9rem;
+  }
+
+  .ak-shop-section__heading h2 {
+    font-size: 2rem;
+  }
+
+  .ak-shop-section__heading > span {
+    max-width: 42%;
+    padding-top: 1.05rem;
+    font-size: 0.5rem;
+  }
+
+  .ak-collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .ak-collection-card__copy {
+    padding: 0.65rem;
+  }
+
+  .ak-collection-card__copy h3 {
+    font-size: 0.68rem;
+  }
+
+  .ak-collection-card__copy p {
+    font-size: 0.51rem;
+  }
+
+  .ak-collection-card__copy > span {
+    font-size: 0.48rem;
+  }
+
+  .ak-shop-section--products {
+    margin-inline: -0.2rem;
+    padding: 0.8rem;
+  }
+
+  .ak-shopify-product {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+
+  .ak-shopify-product__index {
+    padding-top: 1.2rem;
+    font-size: 1.15rem;
+  }
+
+  .ak-shopify-product__embed {
+    min-height: 130px;
+  }
+
+  .ak-accessory-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ak-accessory {
+    padding: 1rem 0.55rem;
+  }
+
+  .ak-accessory:nth-child(2) {
+    border-right: 0;
+  }
+
+  .ak-accessory:nth-child(-n + 2) {
+    border-bottom: 1px solid #333;
+  }
+
+  .ak-accessory__image {
+    height: 95px;
+  }
+
+  .ak-shop-footer {
+    gap: 0.55rem;
+    margin-top: 2.5rem;
+  }
+
+  .ak-shop-footer > a {
+    font-size: 0.48rem;
+  }
+
+  .ak-shop-footer__center {
+    font-size: 0.42rem;
+  }
+
+  .ak-shop-footer__center strong {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .ak-shop-header__nav,
+  .ak-shop-header__shop-link {
+    font-size: 0.56rem;
+  }
+
+  .ak-shop-section__heading h2 {
+    font-size: 1.7rem;
+  }
+
+  .ak-shopify-product {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .ak-shopify-product__index {
+    justify-content: start;
+    padding: 0.7rem 0 0.1rem;
+    border-top: 0;
+  }
+
+  .ak-shop-footer__center span:first-of-type {
+    max-width: 125px;
+    line-height: 1.5;
   }
 }
