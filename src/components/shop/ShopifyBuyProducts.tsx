@@ -40,6 +40,7 @@ const products = [
   { id: "9412689494171", componentId: "product-component-1791792548356" },
   { id: "9412652040347", componentId: "product-component-1791792608979" },
   { id: "9413723881627", componentId: "product-component-1791792647594" },
+  { id: "9413760221339", componentId: "product-component-1791797031540" },
 ] as const;
 
 const initializedNodes = new WeakSet<HTMLElement>();
