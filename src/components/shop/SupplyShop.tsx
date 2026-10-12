@@ -21,9 +21,6 @@ export function SupplyShop() {
             priority
           />
         </a>
-        <a className="ak-shop-header__shop-link" href="#shop-products">
-          Shop the drop <span aria-hidden="true">↘</span>
-        </a>
       </header>
 
       <section className="ak-shop-manifesto" id="mission" aria-labelledby="mission-title">
