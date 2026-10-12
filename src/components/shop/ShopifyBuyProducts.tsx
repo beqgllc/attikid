@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ShopifyBuyUI = {
   createComponent: (
@@ -37,12 +37,13 @@ const SCRIPT_URL =
 const MONEY_FORMAT = "%24%7B%7Bamount%7D%7D";
 
 const products = [
-  { id: "9412689494171", componentId: "product-component-1791792548356" },
-  { id: "9412652040347", componentId: "product-component-1791792608979" },
-  { id: "9413723881627", componentId: "product-component-1791792647594" },
-  { id: "9413760221339", componentId: "product-component-1791797031540" },
-  { id: "9413812093083", componentId: "product-component-1791800579329" },
-  { id: "9413879595163", componentId: "product-component-1791800652256" },
+  { id: "9413812093083", componentId: "product-component-1791801970853" },
+  { id: "9412689494171", componentId: "product-component-1791802096187" },
+  { id: "9413760221339", componentId: "product-component-1791802128373" },
+  { id: "9413788172443", componentId: "product-component-1791802175555" },
+  { id: "9412652040347", componentId: "product-component-1791802202791" },
+  { id: "9413723881627", componentId: "product-component-1791802227131" },
+  { id: "9413879595163", componentId: "product-component-1791802248819" },
 ] as const;
 
 const latestMerchProduct = {
@@ -133,67 +134,13 @@ const productOptions = {
           "margin-left": "0",
           "margin-bottom": "0",
         },
-        "text-align": "left",
-        "background-color": "#0a0a0a",
-        "border": "1px solid #444444",
-        "padding": "24px",
-      },
-      title: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "24px",
-        "font-weight": "600",
-        "color": "#f5f5f5",
-        "letter-spacing": "0.08em",
-        "text-transform": "uppercase",
       },
       button: {
-        "border-radius": "0px",
+        "border-radius": "40px",
         "padding-left": "18px",
         "padding-right": "18px",
-        "background-color": "#ff4e00",
-        "color": "#ffffff",
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "12px",
-        "font-weight": "600",
-        "letter-spacing": "0.14em",
-        "text-transform": "uppercase",
-        ":hover": { "background-color": "#e74600" },
-        ":focus": { "background-color": "#e74600" },
-      },
-      price: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "17px",
-        "font-weight": "500",
-        "color": "#f5f5f5",
-      },
-      compareAt: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "14px",
-        "color": "#a3a3a3",
-      },
-      unitPrice: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "14px",
-        "color": "#a3a3a3",
-      },
-      quantityInput: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "14px",
-        "border-radius": "0px",
-        "border-color": "#666666",
-        "background-color": "#111111",
-        "color": "#f5f5f5",
       },
     },
-    layout: "horizontal",
-    contents: {
-      img: false,
-      imgWithCarousel: true,
-      button: false,
-      buttonWithQuantity: true,
-      description: true,
-    },
-    width: "100%",
     text: { button: "Add to cart" },
   },
   productSet: {
@@ -210,81 +157,24 @@ const productOptions = {
       product: {
         "@media (min-width: 601px)": {
           "max-width": "100%",
-          "margin-left": "0",
-          "margin-bottom": "0",
+          "margin-left": "0px",
+          "margin-bottom": "0px",
         },
       },
-      title: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-weight": "600",
-        "font-size": "26px",
-        "color": "#f5f5f5",
-      },
-      price: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-weight": "500",
-        "font-size": "18px",
-        "color": "#f5f5f5",
-      },
-      compareAt: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-weight": "400",
-        "font-size": "15px",
-        "color": "#a3a3a3",
-      },
-      unitPrice: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-weight": "400",
-        "font-size": "15px",
-        "color": "#a3a3a3",
-      },
       button: {
-        "border-radius": "0px",
-        "background-color": "#ff4e00",
-        "color": "#ffffff",
+        "border-radius": "40px",
+        "padding-left": "18px",
+        "padding-right": "18px",
       },
     },
     text: { button: "Add to cart" },
   },
-  option: {
-    styles: {
-      label: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "11px",
-        "font-weight": "600",
-        "letter-spacing": "0.12em",
-        "text-transform": "uppercase",
-        "color": "#f5f5f5",
-      },
-      select: {
-        "font-family": "Montserrat, Arial, sans-serif",
-        "font-size": "13px",
-        "border-radius": "0px",
-        "border-color": "#666666",
-        "background-color": "#111111",
-        "color": "#f5f5f5",
-      },
-    },
-  },
+  option: {},
   cart: {
-    styles: {
-      button: {
-        "border-radius": "0px",
-        "background-color": "#ff4e00",
-        "color": "#ffffff",
-      },
-    },
+    styles: { button: { "border-radius": "40px" } },
     text: { total: "Subtotal", button: "Checkout" },
   },
-  toggle: {
-    styles: {
-      toggle: {
-        "border-radius": "0px",
-        "background-color": "#ff4e00",
-        ":hover": { "background-color": "#e74600" },
-      },
-    },
-  },
+  toggle: {},
 };
 
 const latestMerchOptions = {
@@ -306,8 +196,10 @@ const latestMerchOptions = {
         "padding": "24px",
       },
       title: {
-        ...productOptions.product.styles.title,
+        "font-family": "Montserrat, Arial, sans-serif",
+        "font-weight": "600",
         "font-size": "26px",
+        color: "#f5f5f5",
       },
       button: {
         ...productOptions.product.styles.button,
@@ -316,8 +208,10 @@ const latestMerchOptions = {
         "padding-right": "18px",
       },
       price: {
-        ...productOptions.product.styles.price,
+        "font-family": "Montserrat, Arial, sans-serif",
+        "font-weight": "500",
         "font-size": "18px",
+        color: "#f5f5f5",
       },
     },
     buttonDestination: "checkout",
@@ -333,6 +227,10 @@ const latestMerchOptions = {
 
 export function ShopifyBuyProducts() {
   const [loadError, setLoadError] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [availabilityFilter, setAvailabilityFilter] = useState("all");
+  const [priceFilter, setPriceFilter] = useState("any");
+  const productsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -363,29 +261,114 @@ export function ShopifyBuyProducts() {
     };
   }, []);
 
+  useEffect(() => {
+    const root = productsRef.current;
+    if (!root) return;
+
+    const applyFilters = () => {
+      const normalizedSearch = searchTerm.trim().toLowerCase();
+      root.querySelectorAll<HTMLElement>(".ak-shopify-product").forEach((card) => {
+        const embed = card.querySelector<HTMLElement>(".ak-shopify-product__embed");
+        const text = (embed?.innerText ?? "").toLowerCase();
+        const searchMatches = !normalizedSearch || text.includes(normalizedSearch);
+        const soldOut = /sold out|out of stock|unavailable/.test(text);
+        const availabilityMatches =
+          availabilityFilter === "all" ||
+          (availabilityFilter === "available" && !soldOut) ||
+          (availabilityFilter === "sold-out" && soldOut);
+
+        const prices = [...(embed?.innerText ?? "").matchAll(/\$\s?([\d,]+(?:\.\d{2})?)/g)]
+          .map((match) => Number(match[1].replace(/,/g, "")))
+          .filter(Number.isFinite);
+        const price = prices.length ? Math.min(...prices) : null;
+        const priceMatches =
+          priceFilter === "any" ||
+          (price !== null && priceFilter === "under-25" && price < 25) ||
+          (price !== null && priceFilter === "25-50" && price >= 25 && price <= 50) ||
+          (price !== null && priceFilter === "over-50" && price > 50);
+
+        card.hidden = !(searchMatches && availabilityMatches && priceMatches);
+      });
+    };
+
+    applyFilters();
+    const observer = new MutationObserver(applyFilters);
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => observer.disconnect();
+  }, [searchTerm, availabilityFilter, priceFilter]);
+
   return (
-    <div className="ak-shopify-products" aria-label="K!D Supply Co. products">
-      {products.map((product, index) => (
-        <article className="ak-shopify-product" key={product.id}>
-          <span className="ak-shopify-product__index" aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <div
-            className="ak-shopify-product__embed"
-            id={product.componentId}
-            aria-label={`Product option ${index + 1}`}
+    <>
+      <div className="ak-shop-product-tools" aria-label="Search and filter products">
+        <label className="ak-shop-product-search">
+          <span>Search products</span>
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search by product name…"
+            aria-label="Search products by name"
+          />
+        </label>
+        <label className="ak-shop-product-filter">
+          <span>Availability</span>
+          <select
+            value={availabilityFilter}
+            onChange={(event) => setAvailabilityFilter(event.target.value)}
+            aria-label="Filter by availability"
           >
-            <span className="ak-shopify-loading">Loading product options…</span>
-          </div>
-        </article>
-      ))}
+            <option value="all">All products</option>
+            <option value="available">Available</option>
+            <option value="sold-out">Sold out</option>
+          </select>
+        </label>
+        <label className="ak-shop-product-filter">
+          <span>Price</span>
+          <select
+            value={priceFilter}
+            onChange={(event) => setPriceFilter(event.target.value)}
+            aria-label="Filter by price"
+          >
+            <option value="any">Any price</option>
+            <option value="under-25">Under $25</option>
+            <option value="25-50">$25–$50</option>
+            <option value="over-50">Over $50</option>
+          </select>
+        </label>
+      </div>
+
+      <div
+        className="ak-shopify-products"
+        aria-label="K!D Supply Co. products"
+        ref={productsRef}
+      >
+        {products.map((product, index) => (
+          <article className="ak-shopify-product" key={product.id}>
+            <span className="ak-shopify-product__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div
+              className="ak-shopify-product__embed"
+              id={product.componentId}
+              aria-label={`Product option ${index + 1}`}
+            >
+              <span className="ak-shopify-loading">Loading product options…</span>
+            </div>
+          </article>
+        ))}
+      </div>
       {loadError ? (
         <p className="ak-shopify-error" role="alert">
           The product options couldn’t load. Refresh the page to try again, or{" "}
           <a href="https://efg117-cy.myshopify.com">visit the K!D Supply Co. store</a>.
         </p>
       ) : null}
-    </div>
+    </>
   );
 }
 
