@@ -196,8 +196,10 @@ const latestMerchOptions = {
         "padding": "24px",
       },
       title: {
-        ...productOptions.product.styles.title,
+        "font-family": "Montserrat, Arial, sans-serif",
+        "font-weight": "600",
         "font-size": "26px",
+        color: "#f5f5f5",
       },
       button: {
         ...productOptions.product.styles.button,
@@ -206,8 +208,10 @@ const latestMerchOptions = {
         "padding-right": "18px",
       },
       price: {
-        ...productOptions.product.styles.price,
+        "font-family": "Montserrat, Arial, sans-serif",
+        "font-weight": "500",
         "font-size": "18px",
+        color: "#f5f5f5",
       },
     },
     buttonDestination: "checkout",
