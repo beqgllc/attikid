@@ -40,7 +40,15 @@ const products = [
   { id: "9412689494171", componentId: "product-component-1791792548356" },
   { id: "9412652040347", componentId: "product-component-1791792608979" },
   { id: "9413723881627", componentId: "product-component-1791792647594" },
+  { id: "9413760221339", componentId: "product-component-1791797031540" },
+  { id: "9413812093083", componentId: "product-component-1791800579329" },
+  { id: "9413879595163", componentId: "product-component-1791800652256" },
 ] as const;
+
+const latestMerchProduct = {
+  id: "9413879595163",
+  componentId: "product-component-1791800992199",
+} as const;
 
 const initializedNodes = new WeakSet<HTMLElement>();
 let sdkPromise: Promise<void> | null = null;
@@ -279,6 +287,50 @@ const productOptions = {
   },
 };
 
+const latestMerchOptions = {
+  ...productOptions,
+  product: {
+    ...productOptions.product,
+    styles: {
+      ...productOptions.product.styles,
+      product: {
+        ...productOptions.product.styles.product,
+        "@media (min-width: 601px)": {
+          "max-width": "100%",
+          "margin-left": "0",
+          "margin-bottom": "0",
+        },
+        "text-align": "left",
+        "background-color": "#0a0a0a",
+        "border": "1px solid #444444",
+        "padding": "24px",
+      },
+      title: {
+        ...productOptions.product.styles.title,
+        "font-size": "26px",
+      },
+      button: {
+        ...productOptions.product.styles.button,
+        "border-radius": "40px",
+        "padding-left": "18px",
+        "padding-right": "18px",
+      },
+      price: {
+        ...productOptions.product.styles.price,
+        "font-size": "18px",
+      },
+    },
+    buttonDestination: "checkout",
+    contents: {
+      img: false,
+      imgWithCarousel: true,
+      description: true,
+    },
+    width: "100%",
+    text: { button: "Buy now" },
+  },
+};
+
 export function ShopifyBuyProducts() {
   const [loadError, setLoadError] = useState(false);
 
@@ -336,3 +388,53 @@ export function ShopifyBuyProducts() {
     </div>
   );
 }
+
+export function ShopifyLatestMerch() {
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    getShopifyUI()
+      .then((ui) => {
+        if (!active) return;
+
+        const node = document.getElementById(latestMerchProduct.componentId);
+        if (!node || initializedNodes.has(node)) return;
+
+        initializedNodes.add(node);
+        ui.createComponent("product", {
+          id: latestMerchProduct.id,
+          node,
+          moneyFormat: MONEY_FORMAT,
+          options: latestMerchOptions,
+        });
+      })
+      .catch(() => {
+        if (active) setLoadError(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return (
+    <div className="ak-shopify-latest">
+      <div
+        className="ak-shopify-latest__embed"
+        id={latestMerchProduct.componentId}
+        aria-label="Latest merch featured product"
+      >
+        <span className="ak-shopify-loading">Loading latest merch…</span>
+      </div>
+      {loadError ? (
+        <p className="ak-shopify-error" role="alert">
+          The featured product couldn’t load. Refresh the page to try again, or{" "}
+          <a href="https://efg117-cy.myshopify.com">visit the K!D Supply Co. store</a>.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+

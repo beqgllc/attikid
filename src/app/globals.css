@@ -1578,3 +1578,114 @@ a:focus-visible {
     line-height: 1.5;
   }
 }
+
+
+/* Storefront refinement: pared-back layout and side-by-side Shopify products */
+.ak-shop-manifesto {
+  margin-top: clamp(1.4rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 2fr) minmax(45px, 0.3fr);
+  gap: clamp(1rem, 3.5vw, 4rem);
+}
+
+.ak-shop-manifesto__body h1 {
+  max-width: 850px;
+  margin: 0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(2.4rem, 6.7vw, 6.8rem);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.ak-shopify-products {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(0.65rem, 1.1vw, 1rem);
+}
+
+.ak-shopify-product {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 0;
+  min-width: 0;
+  padding: clamp(0.55rem, 1.1vw, 1rem);
+  border: 1px solid #3d3d3d;
+  background: #0c0c0c;
+}
+
+.ak-shopify-product__index {
+  justify-content: flex-start;
+  padding: 0 0 0.5rem;
+  border-top: 0;
+  border-bottom: 1px solid #3d3d3d;
+}
+
+.ak-shopify-product__embed {
+  min-height: 100%;
+  border-top: 0;
+}
+
+.ak-shop-section--products {
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.ak-shop-section--products .ak-shop-section__heading {
+  margin-bottom: 1rem;
+}
+
+.ak-shop-section--latest-merch {
+  padding: clamp(1rem, 2vw, 1.8rem);
+  border: 1px solid #333;
+  background: #090909;
+}
+
+.ak-shop-section--latest-merch .ak-shop-section__heading {
+  margin-bottom: 1rem;
+}
+
+.ak-shopify-latest {
+  min-width: 0;
+  width: 100%;
+}
+
+.ak-shopify-latest__embed {
+  min-width: 0;
+  min-height: 240px;
+  color: #f5f5f5;
+}
+
+@media (max-width: 1200px) {
+  .ak-shopify-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .ak-shop-manifesto {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    padding: 2.1rem 0 2.4rem;
+  }
+
+  .ak-shop-manifesto__body h1 {
+    font-size: clamp(2.6rem, 13vw, 4.2rem);
+  }
+
+  .ak-shopify-products {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ak-shopify-product {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .ak-shop-section--products .ak-shop-section__heading h2 {
+    font-size: 1.7rem;
+  }
+}
