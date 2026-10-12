@@ -9,7 +9,7 @@ export function SupplyShop() {
   return (
     <main className="ak-page ak-page--scroll ak-shop">
       <header className="ak-shop-header">
-        <a className="ak-shop-header__nav" href="/">Home</a>
+        <Link className="ak-shop-header__nav" href="/">Home</Link>
         <a className="ak-shop-header__brand" href="/supply-shop" aria-label="K!D Supply Co. home">
           <span className="ak-shop-header__tagline">{shopCopy.tagline}</span>
           <Image
