@@ -1600,7 +1600,7 @@ a:focus-visible {
 
 .ak-shopify-products {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
   gap: clamp(0.65rem, 1.1vw, 1rem);
 }
@@ -1634,6 +1634,27 @@ a:focus-visible {
 
 .ak-shop-section--products .ak-shop-section__heading {
   margin-bottom: 1rem;
+}
+
+.ak-shop-section--latest-merch {
+  padding: clamp(1rem, 2vw, 1.8rem);
+  border: 1px solid #333;
+  background: #090909;
+}
+
+.ak-shop-section--latest-merch .ak-shop-section__heading {
+  margin-bottom: 1rem;
+}
+
+.ak-shopify-latest {
+  min-width: 0;
+  width: 100%;
+}
+
+.ak-shopify-latest__embed {
+  min-width: 0;
+  min-height: 240px;
+  color: #f5f5f5;
 }
 
 @media (max-width: 1200px) {
