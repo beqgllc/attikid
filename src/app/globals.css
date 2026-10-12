@@ -1600,7 +1600,7 @@ a:focus-visible {
 
 .ak-shopify-products {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
   gap: clamp(0.65rem, 1.1vw, 1rem);
 }
@@ -1636,7 +1636,7 @@ a:focus-visible {
   margin-bottom: 1rem;
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 1200px) {
   .ak-shopify-products {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
