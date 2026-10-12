@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { shopCopy } from "@/content/shop";
-import { ShopifyBuyProducts } from "@/components/shop/ShopifyBuyProducts";
+import { ShopifyBuyProducts, ShopifyLatestMerch } from "@/components/shop/ShopifyBuyProducts";
 
 export function SupplyShop() {
   return (
@@ -37,6 +37,16 @@ export function SupplyShop() {
           </p>
         </div>
         <span className="ak-shop-manifesto__mark" aria-hidden="true">K!D<br />SC.</span>
+      </section>
+
+      <section className="ak-shop-section ak-shop-section--latest-merch" id="latest-merch" aria-labelledby="latest-merch-title">
+        <div className="ak-shop-section__heading">
+          <div>
+            <h2 id="latest-merch-title">Latest merch</h2>
+          </div>
+          <span>Latest release</span>
+        </div>
+        <ShopifyLatestMerch />
       </section>
 
       <section className="ak-shop-section ak-shop-section--products" id="shop-products" aria-labelledby="products-title">
