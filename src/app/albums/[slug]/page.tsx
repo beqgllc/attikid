@@ -39,8 +39,9 @@ export default async function AlbumPage({
   return (
     <SitePage>
       <SiteHeader
-        leftLinks={[{ label: "Albums", href: "/albums" }]}
-        rightLinks={[{ label: "Songs", href: "/song-list" }]}
+        leftLinks={[{ label: "Music", href: "/albums" }]}
+        rightLinks={[{ label: "Studio", href: "/studio" }]}
+        musicNavigation
       />
       <section className="ak-interior ak-album-detail" aria-labelledby="album-title">
         <Link className="ak-back-link" href="/albums">← All releases</Link>

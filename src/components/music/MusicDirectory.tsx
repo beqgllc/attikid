@@ -10,7 +10,7 @@ export function MusicDirectory() {
     const normalizedQuery = query.trim().toLocaleLowerCase();
     return [...songs]
       .filter((song) =>
-        `${song.title} ${song.albumTitle}`.toLocaleLowerCase().includes(normalizedQuery),
+        song.title.toLocaleLowerCase().includes(normalizedQuery),
       )
       .sort((first, second) => first.title.localeCompare(second.title));
   }, [query]);
@@ -19,11 +19,11 @@ export function MusicDirectory() {
     <>
       <label className="ak-search">
         <span className="ak-search__icon" aria-hidden="true">⌕</span>
-        <span className="ak-visually-hidden">Search songs or albums</span>
+        <span className="ak-visually-hidden">Search song titles</span>
         <input
           autoComplete="off"
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search songs or albums..."
+          placeholder="Search by song title..."
           type="search"
           value={query}
         />

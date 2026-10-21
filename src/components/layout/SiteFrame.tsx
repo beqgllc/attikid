@@ -27,9 +27,11 @@ export function AttikidLogo() {
 export function SiteHeader({
   leftLinks,
   rightLinks,
+  musicNavigation = false,
 }: {
   leftLinks: SiteLink[];
   rightLinks: SiteLink[];
+  musicNavigation?: boolean;
 }) {
   const links = (items: SiteLink[], label: string, className: string) => (
     <nav aria-label={label} className={className}>
@@ -41,9 +43,23 @@ export function SiteHeader({
     </nav>
   );
 
+  const musicLinks = (
+    <nav aria-label="Music navigation" className="ak-nav ak-nav--left">
+      <details className="ak-music-menu">
+        <summary aria-label="Open Music menu">
+          <span>Music</span><span className="ak-music-menu__indicator" aria-hidden="true">+</span>
+        </summary>
+        <div className="ak-music-menu__submenu" aria-label="Music pages">
+          <Link href="/albums">Albums</Link>
+          <Link href="/song-list">Songs</Link>
+        </div>
+      </details>
+    </nav>
+  );
+
   return (
     <header className="ak-header">
-      {links(leftLinks, "Main navigation", "ak-nav ak-nav--left")}
+      {musicNavigation ? musicLinks : links(leftLinks, "Main navigation", "ak-nav ak-nav--left")}
       <AttikidLogo />
       {links(rightLinks, "More navigation", "ak-nav ak-nav--right")}
     </header>
@@ -63,7 +79,7 @@ export function SiteFooter({
         {leftLink.label}
       </Link>
       <div className="ak-legal">
-          <p>{footerCopy.copyright}</p>
+        <p>{footerCopy.copyright}</p>
         <p className="ak-legal__links">
           <Link href="https://app.websitepolicies.com/policies/view/3yyoytb8">{footerCopy.privacy}</Link>
           <span aria-hidden="true"> | </span>

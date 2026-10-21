@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SiteFooter, SiteHeader } from "@/components/layout/SiteFrame";
 import { homeCopy } from "@/content/site";
 
@@ -6,7 +7,8 @@ export function AttikidHome() {
     <main className="ak-page" id="home">
       <SiteHeader
         leftLinks={[{ label: homeCopy.navigation.albums, href: "/albums" }]}
-        rightLinks={[{ label: homeCopy.navigation.songs, href: "/song-list" }]}
+        rightLinks={[{ label: "Studio", href: "/studio" }]}
+        musicNavigation
       />
 
       <section className="ak-hero" aria-labelledby="ak-title">
@@ -20,6 +22,10 @@ export function AttikidHome() {
             ))}
           </h1>
           <p className="ak-subtitle">{homeCopy.subtitle}</p>
+          <Link className="ak-home-studio-link" href="/studio">
+            <span>FOR THE PEOPLE MAKING THE MUSIC</span>
+            <strong>ENTER ATTIKID STUDIO <span aria-hidden="true">↗</span></strong>
+          </Link>
         </div>
       </section>
 
