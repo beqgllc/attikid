@@ -9,7 +9,7 @@ Open the Studio at [attikid.com/studio](https://www.attikid.com/studio).
 ### Routes and tools
 
 - `/studio` — workspace landing page and tool directory.
-- `/studio/tools/rhyme-finder` — Datamuse-powered perfect and near-rhyme lookup with a temporary scratchpad.
+- `/studio/tools/rhyme-finder` — Datamuse-powered perfect, near, slant/consonant-match, similar-sounding, and multisyllabic rhyme searches. Hover or keyboard-focus a result to reveal available definitions and part of speech; collect words in a temporary scratchpad.
 - `/studio/tools/bar-counter` — offline heuristic syllable estimates, line counts, and cadence comparisons.
 - `/studio/tools/prompt-builder` — editable structured prompts and local style/production variations; it does not generate audio or call an AI model.
 - `/studio/tools/lyric-formatter` — section insertion and conservative formatting that preserves lyric wording.
@@ -17,7 +17,7 @@ Open the Studio at [attikid.com/studio](https://www.attikid.com/studio).
 - `/studio/tools/split-sheet` — contributor/ownership draft with validation, CSV export, and print output.
 - `/studio/tools/release-checklist` — suggested release tasks, custom tasks, browser-local progress, JSON export, and print output.
 - `/studio/tools/epk-builder` — artist press-kit editor with local preview and text/print output.
-- `/studio/tools/lyric-pad` — notepad with color-coded perfect, slant, near, multisyllabic, and internal rhyme highlighting.
+- `/studio/tools/lyric-pad` — notepad with full-fill, color-coded perfect, slant, near, multisyllabic, and internal rhyme highlighting, plus rhyme-pair totals.
 
 The Music corner navigation groups Albums and Songs under **Music**. The Songs directory search filters by song title.
 
