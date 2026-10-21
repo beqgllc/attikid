@@ -11,8 +11,9 @@ export default function SongListPage() {
   return (
     <SitePage>
       <SiteHeader
-        leftLinks={[{ label: "Albums", href: "/albums" }]}
-        rightLinks={[{ label: "Merch", href: "/supply-shop" }]}
+        leftLinks={[{ label: "Music", href: "/albums" }]}
+        rightLinks={[{ label: "Studio", href: "/studio" }]}
+        musicNavigation
       />
       <section className="ak-interior ak-song-page" aria-labelledby="song-title">
         <div className="ak-song-page__intro">

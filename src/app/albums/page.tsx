@@ -12,8 +12,9 @@ export default function AlbumsPage() {
   return (
     <SitePage>
       <SiteHeader
-        leftLinks={[{ label: "Home", href: "/" }]}
-        rightLinks={[{ label: "Songs", href: "/song-list" }]}
+        leftLinks={[{ label: "Music", href: "/albums" }]}
+        rightLinks={[{ label: "Studio", href: "/studio" }]}
+        musicNavigation
       />
       <section className="ak-interior ak-albums" aria-labelledby="albums-title">
         <h1 className="ak-page-title" id="albums-title">
