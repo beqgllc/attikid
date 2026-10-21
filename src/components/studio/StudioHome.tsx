@@ -1,37 +1,70 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { studioTools } from "@/components/studio/studio-config";
 
 type RecentTool = { id: string; title: string; usedAt: number };
 
 const RECENT_KEY = "attikid.studio.recent-tools.v1";
 const categories = ["WRITE", "CREATE", "PRODUCE", "ORGANIZE"] as const;
+const EMPTY_RECENT: RecentTool[] = [];
+const getServerRecentSnapshot = () => EMPTY_RECENT;
+let cachedRecentStorage: string | null | undefined;
+let cachedRecentSnapshot: RecentTool[] = EMPTY_RECENT;
+
+function getRecentToolsSnapshot(): RecentTool[] {
+  if (typeof window === "undefined") return EMPTY_RECENT;
+
+  let raw: string | null;
+  try {
+    raw = window.localStorage.getItem(RECENT_KEY);
+  } catch {
+    return EMPTY_RECENT;
+  }
+  if (raw === cachedRecentStorage) return cachedRecentSnapshot;
+
+  cachedRecentStorage = raw;
+  if (!raw) {
+    cachedRecentSnapshot = EMPTY_RECENT;
+    return cachedRecentSnapshot;
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    cachedRecentSnapshot = Array.isArray(parsed)
+      ? parsed.filter(
+          (item): item is RecentTool =>
+            typeof item === "object" &&
+            item !== null &&
+            typeof item.id === "string" &&
+            typeof item.title === "string" &&
+            typeof item.usedAt === "number" &&
+            studioTools.some((tool) => tool.id === item.id),
+        ).slice(0, 4)
+      : EMPTY_RECENT;
+  } catch {
+    cachedRecentSnapshot = EMPTY_RECENT;
+  }
+  return cachedRecentSnapshot;
+}
+
+function subscribeToRecentTools(onStoreChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener("attikid:studio-recent-tools", onStoreChange);
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener("attikid:studio-recent-tools", onStoreChange);
+  };
+}
 
 export function StudioHome() {
-  const [recent, setRecent] = useState<RecentTool[]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(RECENT_KEY);
-      if (!raw) return;
-      const parsed: unknown = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return;
-      const valid = parsed.filter(
-        (item): item is RecentTool =>
-          typeof item === "object" &&
-          item !== null &&
-          typeof item.id === "string" &&
-          typeof item.title === "string" &&
-          typeof item.usedAt === "number" &&
-          studioTools.some((tool) => tool.id === item.id),
-      );
-      setRecent(valid.slice(0, 4));
-    } catch {
-      setRecent([]);
-    }
-  }, []);
+  const recent = useSyncExternalStore(
+    subscribeToRecentTools,
+    getRecentToolsSnapshot,
+    getServerRecentSnapshot,
+  );
 
   return (
     <div className="ak-studio-home">

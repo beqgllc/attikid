@@ -76,7 +76,6 @@ export function BpmPlannerTool() {
   const totalBars = sections.reduce((total, section) => total + barsFor(section), 0);
   const secondsFor = (bars: number) => validBpm && validMeter ? bars * quarterBeatsPerBar * 60 / bpmNumber : 0;
   const totalSeconds = secondsFor(totalBars);
-  let timelineCursor = 0;
   const exportText = [
     "ATTIKID STUDIO — BPM & SONG STRUCTURE PLAN",
     `Tempo: ${validBpm ? bpmNumber + " BPM" : "Invalid BPM"}`,
@@ -121,8 +120,10 @@ export function BpmPlannerTool() {
         <div className="ak-bpm-section-list">
           {sections.map((section, index) => {
             const bars = barsFor(section);
-            const startTime = secondsFor(timelineCursor);
-            timelineCursor += bars;
+            const startBars = sections
+              .slice(0, index)
+              .reduce((total, previousSection) => total + barsFor(previousSection), 0);
+            const startTime = secondsFor(startBars);
             return (
               <article className="ak-bpm-section" key={section.id}>
                 <div className="ak-bpm-section__index">{String(index + 1).padStart(2, "0")}</div>
@@ -299,23 +300,28 @@ export function ReleaseChecklistTool() {
   const sections = [...new Set(tasks.map((task) => task.section))];
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(CHECKLIST_KEY);
-      if (raw !== null) {
-        const parsed: unknown = JSON.parse(raw);
-        if (validChecklist(parsed)) setTasks(parsed);
-        else setNotice({ kind: "error", text: "Saved checklist data was malformed. A fresh checklist is loaded in this browser." });
+    const timeout = window.setTimeout(() => {
+      try {
+        const raw = window.localStorage.getItem(CHECKLIST_KEY);
+        if (raw !== null) {
+          const parsed: unknown = JSON.parse(raw);
+          if (validChecklist(parsed)) setTasks(parsed);
+          else setNotice({ kind: "error", text: "Saved checklist data was malformed. A fresh checklist is loaded in this browser." });
+        }
+      } catch {
+        setNotice({ kind: "error", text: "Saved checklist data could not be read. A fresh checklist is loaded in this browser." });
       }
-    } catch {
-      setNotice({ kind: "error", text: "Saved checklist data could not be read. A fresh checklist is loaded in this browser." });
-    }
-    setLoaded(true);
+      setLoaded(true);
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
     if (!loaded) return;
     try { window.localStorage.setItem(CHECKLIST_KEY, JSON.stringify(tasks)); }
-    catch { setNotice({ kind: "error", text: "Browser storage is unavailable; checklist changes may not persist after you leave." }); }
+    catch {
+      // Checklist interactions remain available; export JSON if browser storage is blocked.
+    }
   }, [loaded, tasks]);
 
   const exportJson = () => download("attikid-release-checklist.json", JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), tasks }, null, 2), "application/json;charset=utf-8");
@@ -370,7 +376,7 @@ export function ReleaseChecklistTool() {
           <button type="button" className="ak-studio-button" onClick={reset}>RESET CHECKLIST</button>
         </div>
         <Notice notice={notice} />
-        <p className="ak-studio-footnote">This starter checklist is a suggested workflow. Actual requirements vary by distributor, provider, release type, territory, and campaign. Progress is stored in this browser only and will not sync; clearing browser data can erase it.</p>
+        <p className="ak-studio-footnote">This starter checklist is a suggested workflow. Actual requirements vary by distributor, provider, release type, territory, and campaign. Progress is stored in this browser only and will not sync; clearing browser data can erase it. If storage is blocked, export a JSON backup before leaving.</p>
       </section>
     </div>
   );

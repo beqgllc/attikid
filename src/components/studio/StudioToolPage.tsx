@@ -53,6 +53,7 @@ export function StudioToolPage({ tool }: { tool: StudioToolId }) {
         ...valid.filter((item) => item.id !== tool),
       ].slice(0, 4);
       window.localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      window.dispatchEvent(new Event("attikid:studio-recent-tools"));
     } catch {
       // Recent history is optional; the tools remain fully usable if storage is disabled.
     }
