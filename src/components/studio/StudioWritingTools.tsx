@@ -488,11 +488,11 @@ export function LyricFormatterTool() {
 }
 
 const rhymeStyle: Record<RhymeType, { label: string; color: string; background: string; description: string }> = {
-  perfect: { label: "Perfect", color: "#ff724f", background: "rgba(255, 89, 48, .23)", description: "Matching approximate end-rhyme spelling from the final vowel sound." },
-  slant: { label: "Slant", color: "#b9a0ff", background: "rgba(145, 109, 255, .22)", description: "Looser match sharing an ending consonant pattern." },
-  near: { label: "Near", color: "#7bd5e7", background: "rgba(75, 192, 216, .2)", description: "Similar ending letters with a different main rhyme key." },
-  multi: { label: "Multi", color: "#f3cd6c", background: "rgba(243, 205, 108, .2)", description: "A matching ending across an approximate two-syllable-or-longer phrase." },
-  internal: { label: "Internal", color: "#f19ed8", background: "rgba(241, 158, 216, .2)", description: "A rhyme pair detected within the same lyric line." },
+  perfect: { label: "Perfect", color: "#ff724f", background: "#96351f", description: "Matching approximate end-rhyme spelling from the final vowel sound." },
+  slant: { label: "Slant", color: "#c4adff", background: "#574087", description: "Looser match sharing an ending consonant pattern." },
+  near: { label: "Near", color: "#83e4f5", background: "#155d70", description: "Similar ending letters with a different main rhyme key." },
+  multi: { label: "Multi", color: "#f8da82", background: "#785b12", description: "A matching ending across an approximate two-syllable-or-longer phrase." },
+  internal: { label: "Internal", color: "#ffc0e7", background: "#823765", description: "A rhyme pair detected within the same lyric line." },
 };
 
 const rhymePriority: RhymeType[] = ["multi", "perfect", "near", "slant", "internal"];
@@ -520,7 +520,11 @@ export function LyricPadTool() {
       const secondary = sorted[1];
       const style = {
         backgroundColor: rhymeStyle[primary].background,
-        borderBottomColor: secondary ? rhymeStyle[secondary].color : rhymeStyle[primary].color,
+        backgroundImage: secondary
+          ? `linear-gradient(110deg, ${rhymeStyle[primary].background} 0%, ${rhymeStyle[primary].background} 72%, ${rhymeStyle[secondary].background} 72%, ${rhymeStyle[secondary].background} 100%)`
+          : "none",
+        color: "#fff",
+        textDecoration: "none",
       };
       return (
         <mark
