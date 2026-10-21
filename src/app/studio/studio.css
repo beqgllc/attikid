@@ -1958,3 +1958,155 @@
     break-inside: avoid;
   }
 }
+
+
+/* Rhyme Finder: definition cards open beneath the active result word. */
+.ak-rhyme-result {
+  position: relative;
+  overflow: visible;
+}
+
+.ak-rhyme-result:hover,
+.ak-rhyme-result:focus-within {
+  z-index: 30;
+  border-color: #68402f;
+}
+
+.ak-rhyme-result__main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.ak-rhyme-result__word {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .45rem;
+  max-width: 100%;
+  min-height: 28px;
+  padding: .25rem 0;
+}
+
+.ak-rhyme-result__word span {
+  overflow-wrap: anywhere;
+}
+
+.ak-rhyme-result__word small {
+  flex-shrink: 0;
+  color: #828282;
+  font-size: .49rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.ak-rhyme-definition {
+  position: absolute;
+  top: calc(100% + .42rem);
+  left: -.4rem;
+  z-index: 50;
+  width: min(330px, calc(100vw - 4rem));
+  max-height: 300px;
+  overflow: auto;
+  padding: .85rem .9rem;
+  border: 1px solid #5b453a;
+  color: #f0f0f0;
+  background: #111;
+  box-shadow: 0 12px 32px #000d;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-3px);
+  transition: opacity 130ms ease, transform 130ms ease, visibility 130ms ease;
+}
+
+.ak-rhyme-result__main:hover .ak-rhyme-definition,
+.ak-rhyme-result__main:focus-within .ak-rhyme-definition {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.ak-rhyme-definition__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .65rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid #343434;
+}
+
+.ak-rhyme-definition__head strong {
+  overflow-wrap: anywhere;
+  color: #fff;
+  font-size: .85rem;
+}
+
+.ak-rhyme-definition__head > span {
+  flex-shrink: 0;
+  color: var(--ak-accent, #ff4e00);
+  font-size: .48rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.ak-rhyme-definition ol {
+  display: grid;
+  gap: .75rem;
+  margin: .7rem 0 0;
+  padding-left: 1rem;
+}
+
+.ak-rhyme-definition li {
+  padding-left: .1rem;
+  color: #777;
+  font-size: .62rem;
+  line-height: 1.6;
+}
+
+.ak-rhyme-definition li > span {
+  display: block;
+  margin-bottom: .15rem;
+  color: #d7a68b;
+  font-size: .52rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.ak-rhyme-definition li p,
+.ak-rhyme-definition__unavailable {
+  margin: 0;
+  color: #d0d0d0;
+  font-size: .68rem;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ak-rhyme-definition__unavailable {
+  margin-top: .7rem;
+  color: #999;
+}
+
+@media (max-width: 700px) {
+  .ak-rhyme-definition {
+    width: min(300px, calc(100vw - 3rem));
+  }
+}
+
+/* Lyric Pad: show detected rhymes as filled text highlights, never underlines. */
+.ak-lyric-mark {
+  display: inline;
+  padding: 1px 2px;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  border-radius: 2px;
+  color: #fff !important;
+  text-decoration: none !important;
+  background-clip: padding-box;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
