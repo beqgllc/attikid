@@ -7,6 +7,29 @@ const siteUrl = "https://attikid.com";
 const siteDescription =
   "Discover Attikid: independent music, emotionally honest hip-hop, albums and songs, plus free songwriting and music-creation tools in Attikid Studio.";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://attikid.com/#website",
+      url: "https://attikid.com/",
+      name: "Attikid",
+      description: siteDescription,
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://attikid.com/#organization",
+      name: "Attikid",
+      url: "https://attikid.com/",
+      description: siteDescription,
+      email: "attikid.music@outlook.com",
+      logo: "https://attikid.com/images/attikid-wordmark.svg",
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -64,6 +87,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
+        />
         <a className="ak-skip-link" href="#main-content">Skip to main content</a>
         {children}
         <Analytics />
