@@ -1892,3 +1892,13 @@ a:focus-visible {
     font-size: .57rem;
   }
 }
+
+/* SEO content and keyboard navigation */
+.ak-skip-link { position: fixed; z-index: 10000; top: 1rem; left: 1rem; padding: .75rem 1rem; color: #0b0b0d; background: #fff; border-radius: .25rem; transform: translateY(-200%); }
+.ak-skip-link:focus { transform: translateY(0); }
+.ak-home-discovery { padding: clamp(3rem, 8vw, 7rem) clamp(1.25rem, 7vw, 7rem); color: #f4f1ed; background: #101013; }
+.ak-home-discovery__inner { max-width: 56rem; margin: 0 auto; }
+.ak-home-discovery h2 { max-width: 48rem; margin: 1.5rem 0 1rem; font-size: clamp(1.75rem, 4vw, 3.25rem); line-height: 1.08; letter-spacing: -.035em; }
+.ak-home-discovery p:not(.ak-eyebrow) { max-width: 48rem; color: #c5c2c0; font-size: clamp(1rem, 1.5vw, 1.125rem); line-height: 1.8; }
+.ak-home-discovery__links { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; margin: 1.5rem 0 3rem; }
+.ak-home-discovery__links a { color: inherit; text-underline-offset: .25em; }
