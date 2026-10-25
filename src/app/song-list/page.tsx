@@ -4,7 +4,8 @@ import { SiteFooter, SiteHeader, SitePage } from "@/components/layout/SiteFrame"
 
 export const metadata: Metadata = {
   title: "A to Z Song Directory | Attikid",
-  description: "Search and listen to songs by Attikid in the A to Z directory.",
+  description: "Browse the Attikid song directory from A to Z. Find original tracks and listen to music by independent artist Attikid.",
+  alternates: { canonical: "/song-list" },
 };
 
 export default function SongListPage() {
