@@ -4,7 +4,7 @@ import "./studio.css";
 
 export default function StudioLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <main className="ak-page ak-page--scroll ak-studio-shell">
+    <main className="ak-page ak-page--scroll ak-studio-shell" id="main-content">
       <SiteHeader
         leftLinks={[{ label: "Music", href: "/albums" }]}
         rightLinks={[{ label: "Studio", href: "/studio" }]}
