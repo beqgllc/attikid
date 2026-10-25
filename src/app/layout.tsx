@@ -15,7 +15,6 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   applicationName: "Attikid",
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteUrl,
@@ -24,7 +23,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/images/attikid-social.jpg",
+        url: "/images/albums/misery-motel-cover-artwork.webp",
         width: 1200,
         height: 630,
         alt: "Attikid — Same Kid, Different Demons",
@@ -35,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Attikid | Independent Music, Albums & Songwriting Tools",
     description: siteDescription,
-    images: ["/images/attikid-social.jpg"],
+    images: ["/images/albums/misery-motel-cover-artwork.webp"],
   },
   robots: {
     index: true,
