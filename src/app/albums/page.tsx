@@ -5,7 +5,8 @@ import { albums, songsForAlbum } from "@/content/music";
 
 export const metadata: Metadata = {
   title: "Albums | Attikid",
-  description: "Explore Attikid's releases and album artwork.",
+  description: "Explore Attikid album releases, cover artwork, and original independent music. Listen to tracks and discover each project.",
+  alternates: { canonical: "/albums" },
 };
 
 export default function AlbumsPage() {
