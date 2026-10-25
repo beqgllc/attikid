@@ -20,7 +20,8 @@ export async function generateMetadata({
   return album
     ? {
         title: `${album.title} | Attikid`,
-        description: `Listen to tracks from ${album.title} by Attikid.`,
+        description: `Listen to ${album.title} by Attikid. Explore the album, view its artwork, and discover the track listing.`,
+        alternates: { canonical: `/albums/${album.slug}` },
       }
     : { title: "Release not found | Attikid" };
 }
