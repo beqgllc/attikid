@@ -94,5 +94,5 @@ export function SiteFooter({
 }
 
 export function SitePage({ children }: { children: ReactNode }) {
-  return <main className="ak-page ak-page--scroll">{children}</main>;
+  return <main className="ak-page ak-page--scroll" id="main-content">{children}</main>;
 }
