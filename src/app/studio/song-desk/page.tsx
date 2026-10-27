@@ -7,6 +7,35 @@ import styles from "./page.module.css";
 type Section = { id: string; kind: string; text: string };
 type Draft = { title: string; lyrics: string; sections: Section[]; notes: string; updatedAt: number };
 const KEY = "attikid.studio.song-desk.v1";
+type SavedVersion = { id: string; savedAt: number; draft: Draft };
+type IdeaNote = { id: string; title: string; tags: string[]; createdAt: number; blob: Blob; };
+const HISTORY_KEY = "attikid.studio.song-desk.history.v1";
+const NOTES_DB = "attikid-studio-notes";
+const NOTES_STORE = "voice-notes";
+function openNotesDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(NOTES_DB, 1);
+    request.onupgradeneeded = () => { const db = request.result; if (!db.objectStoreNames.contains(NOTES_STORE)) db.createObjectStore(NOTES_STORE, { keyPath: "id" }); };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+async function saveIdea(note: IdeaNote) {
+  const db = await openNotesDb();
+  await new Promise<void>((resolve, reject) => { const tx = db.transaction(NOTES_STORE, "readwrite"); tx.objectStore(NOTES_STORE).put(note); tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); });
+  db.close();
+}
+async function listIdeas(): Promise<IdeaNote[]> {
+  const db = await openNotesDb();
+  const items = await new Promise<IdeaNote[]>((resolve, reject) => { const req = db.transaction(NOTES_STORE, "readonly").objectStore(NOTES_STORE).getAll(); req.onsuccess = () => resolve(req.result as IdeaNote[]); req.onerror = () => reject(req.error); });
+  db.close(); return items.sort((a,b) => b.createdAt-a.createdAt);
+}
+async function removeIdea(id: string) {
+  const db = await openNotesDb();
+  await new Promise<void>((resolve, reject) => { const tx = db.transaction(NOTES_STORE, "readwrite"); tx.objectStore(NOTES_STORE).delete(id); tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); });
+  db.close();
+}
+
 const initial: Draft = { title: "Untitled draft", lyrics: "", sections: [{ id: "v1", kind: "Verse 1", text: "" }, { id: "hook", kind: "Hook", text: "" }], notes: "", updatedAt: Date.now() };
 const countSyllables = (word: string) => { const w = word.toLowerCase().replace(/[^a-z']/g, ""); if (!w) return 0; if (w.length <= 3) return 1; const groups = w.match(/[aeiouy]+/g); let count = groups?.length ?? 1; if (w.endsWith("e") && !w.endsWith("le") && count > 1) count--; if (w.endsWith("ed") && !w.endsWith("ted") && !w.endsWith("ded") && count > 1) count--; return Math.max(1, count); };
 const lineSyllables = (line: string) => line.trim() ? line.trim().split(/\s+/).reduce((n, word) => n + countSyllables(word), 0) : 0;
@@ -21,13 +50,24 @@ export default function SongDeskPage() {
   const [recording, setRecording] = useState(false);
   const [recordingUrl, setRecordingUrl] = useState("");
   const [recordingError, setRecordingError] = useState("");
+  const [versions, setVersions] = useState<SavedVersion[]>([]);
+  const [ideas, setIdeas] = useState<IdeaNote[]>([]);
+  const [ideaTitle, setIdeaTitle] = useState("Voice note");
+  const [ideaTags, setIdeaTags] = useState("hook, melody");
+  const [ideaStatus, setIdeaStatus] = useState("");
+  const [historyStatus, setHistoryStatus] = useState("");
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
-  useEffect(() => { try { const raw = localStorage.getItem(KEY); if (raw) setDraft({ ...initial, ...JSON.parse(raw) }); } catch {} setLoaded(true); }, []);
+  useEffect(() => { try { const raw = localStorage.getItem(KEY); if (raw) setDraft({ ...initial, ...JSON.parse(raw) }); const history = localStorage.getItem(HISTORY_KEY); if (history) setVersions(JSON.parse(history)); } catch {} setLoaded(true); void listIdeas().then(setIdeas).catch(() => setIdeaStatus("Voice-note storage is unavailable in this browser.")); }, []);
   useEffect(() => { if (!loaded) return; const id = window.setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ ...draft, updatedAt: Date.now() })); } catch {} }, 350); return () => window.clearTimeout(id); }, [draft, loaded]);
   const lines = useMemo(() => draft.lyrics.split("\n"), [draft.lyrics]);
   const syllables = useMemo(() => lines.map((line) => lineSyllables(line)), [lines]);
   const average = useMemo(() => { const nonempty = syllables.filter((n) => n > 0); return nonempty.length ? (nonempty.reduce((a,b)=>a+b,0)/nonempty.length).toFixed(1) : "—"; }, [syllables]);
+  function saveVersion() { const next = [{ id: crypto.randomUUID(), savedAt: Date.now(), draft: { ...draft, updatedAt: Date.now() } }, ...versions].slice(0, 30); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); setVersions(next); setHistoryStatus("Version saved on this device."); } catch { setHistoryStatus("Could not save a version. Browser storage may be full."); } }
+  function restoreVersion(version: SavedVersion) { setDraft({ ...version.draft }); setHistoryStatus("Restored a saved version. Save again to create a new checkpoint."); }
+  async function saveRecordedIdea() { if (!recordingUrl) return; try { const response = await fetch(recordingUrl); const blob = await response.blob(); const note: IdeaNote = { id: crypto.randomUUID(), title: ideaTitle.trim() || "Untitled voice note", tags: ideaTags.split(",").map((tag) => tag.trim()).filter(Boolean).slice(0, 12), createdAt: Date.now(), blob }; await saveIdea(note); setIdeas(await listIdeas()); setIdeaStatus("Saved to this browser’s idea inbox."); } catch { setIdeaStatus("Could not save the voice note. Download it as a backup."); } }
+  async function deleteIdea(id: string) { try { await removeIdea(id); setIdeas(await listIdeas()); } catch { setIdeaStatus("Could not delete this note."); } }
+  function openIdea(note: IdeaNote) { if (recordingUrl) URL.revokeObjectURL(recordingUrl); setRecordingUrl(URL.createObjectURL(note.blob)); setIdeaTitle(note.title); setIdeaTags(note.tags.join(", ")); setIdeaStatus("Loaded note from this browser’s inbox."); }
   async function findRhymes() { const word = query.trim().split(/\s+/).pop(); if (!word) return; setRhyming(true); setRhymingError(""); try { const res = await fetch("https://api.datamuse.com/words?rel_rhy=" + encodeURIComponent(word) + "&max=60"); if (!res.ok) throw new Error("Rhyme service unavailable"); const data = await res.json(); setRhymes(data.map((item: {word:string})=>item.word)); if (!data.length) setRhymingError("No exact matches returned. Try a different word or phrase."); } catch { setRhymingError("Could not reach the rhyme service. Your draft stays on this device."); } finally { setRhyming(false); } }
   async function toggleRecording() { setRecordingError(""); if (recording && mediaRef.current) { mediaRef.current.stop(); setRecording(false); return; } if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) { setRecordingError("Voice recording is not supported in this browser."); return; } try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); const recorder = new MediaRecorder(stream); chunksRef.current = []; recorder.ondataavailable = (event) => { if (event.data.size) chunksRef.current.push(event.data); }; recorder.onstop = () => { const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" }); if (recordingUrl) URL.revokeObjectURL(recordingUrl); setRecordingUrl(URL.createObjectURL(blob)); stream.getTracks().forEach((track) => track.stop()); }; recorder.start(); mediaRef.current = recorder; setRecording(true); } catch { setRecordingError("Microphone access was blocked. Check browser permissions and try again."); } }
   function addSection(kind: string) { setDraft((d) => ({ ...d, sections: [...d.sections, { id: crypto.randomUUID(), kind, text: "" }] })); }
@@ -46,7 +86,7 @@ export default function SongDeskPage() {
       </div>
       <aside className={styles.sidebar}>
         <section className={styles.tool}><p className={styles.label}>01 / RHYME EXPLORER</p><h2>Find the sound.</h2><p>Look up end rhymes for the last word you enter. Results come from Datamuse; judge pronunciation and fit yourself.</p><form onSubmit={(e)=>{e.preventDefault();void findRhymes();}}><input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Try: broken" aria-label="Word to rhyme" /><button disabled={rhyming||!query.trim()}>{rhyming?"SEARCHING…":"FIND RHYMES ↗"}</button></form>{rhymingError&&<p className={styles.error}>{rhymingError}</p>}<div className={styles.rhymeResults}>{rhymes.map((word)=><button key={word} onClick={()=>setDraft((d)=>({...d,lyrics:d.lyrics+(d.lyrics?"\n":"")+word}))}>{word}<span>+ add line</span></button>)}</div></section>
-        <section className={styles.tool}><p className={styles.label}>02 / IDEA INBOX</p><h2>Catch it before it goes.</h2><p>Record a melody, rough hook, or passing thought. The audio stays in this browser session unless you download it.</p><button className={styles.recordButton} onClick={()=>void toggleRecording()}>{recording?"■ STOP RECORDING":"● RECORD A NOTE"}</button>{recording&&<p className={styles.recording}>RECORDING IN PROGRESS</p>}{recordingError&&<p className={styles.error}>{recordingError}</p>}{recordingUrl&&<div className={styles.audio}><audio controls src={recordingUrl}/><a href={recordingUrl} download="attikid-voice-note.webm">Download voice note ↗</a></div>}</section>
+        <section className={styles.tool}><p className={styles.label}>02 / IDEA INBOX</p><h2>Catch it before it goes.</h2><p>Record a melody, rough hook, or passing thought. The audio stays in this browser session unless you download it.</p><button className={styles.recordButton} onClick={()=>void toggleRecording()}>{recording?"■ STOP RECORDING":"● RECORD A NOTE"}</button>{recording&&<p className={styles.recording}>RECORDING IN PROGRESS</p>}{recordingError&&<p className={styles.error}>{recordingError}</p>}{recordingUrl&&<div className={styles.audio}><audio controls src={recordingUrl}/><a href={recordingUrl} download="attikid-voice-note.webm">Download voice note ↗</a><label className={styles.label} htmlFor="idea-title">NOTE TITLE</label><input id="idea-title" value={ideaTitle} onChange={(e)=>setIdeaTitle(e.target.value)} /><label className={styles.label} htmlFor="idea-tags">TAGS · COMMA SEPARATED</label><input id="idea-tags" value={ideaTags} onChange={(e)=>setIdeaTags(e.target.value)} /><button className={styles.export} onClick={()=>void saveRecordedIdea()}>SAVE TO IDEA INBOX</button></div>}{ideaStatus&&<p className={styles.small}>{ideaStatus}</p>}<div className={styles.ideaList}><p className={styles.label}>SAVED IDEAS · THIS DEVICE</p>{ideas.length===0?<p className={styles.small}>Your saved voice notes will appear here.</p>:ideas.map((idea)=><article className={styles.ideaItem} key={idea.id}><button className={styles.ideaTitle} onClick={()=>openIdea(idea)}>{idea.title}</button><p>{idea.tags.map((tag)=>"#"+tag).join(" ")}</p><div><button onClick={()=>openIdea(idea)}>OPEN</button><button onClick={()=>void deleteIdea(idea.id)}>DELETE</button></div></article>)}</div></section>
         <section className={styles.tool}><p className={styles.label}>03 / WORKING NOTES</p><h2>Leave yourself a note.</h2><textarea className={styles.notes} value={draft.notes} onChange={(e)=>setDraft({...draft,notes:e.target.value})} placeholder="Reference, feeling, beat idea, next step…"/><p className={styles.small}>Draft and notes are saved to local browser storage. They do not sync across devices.</p><button className={styles.export} onClick={()=>{const blob=new Blob([JSON.stringify(draft,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(draft.title||"attikid-draft").toLowerCase().replace(/[^a-z0-9]+/g,"-")+".json";a.click();URL.revokeObjectURL(url);}}>EXPORT DRAFT JSON ↓</button></section>
       </aside>
     </section><footer className={styles.footer}><Link href="/studio">ALL STUDIO TOOLS ↗</Link><span>UNFINISHED IS A VALID PLACE TO START.</span></footer>
