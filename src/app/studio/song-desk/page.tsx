@@ -11,6 +11,7 @@ const KEY = "attikid.studio.song-desk.v1";
 type SavedVersion = { id: string; savedAt: number; draft: Draft };
 type CloudProject = { id: string; title: string; draft: Draft; updated_at: string };
 type CloudVoiceNote = { id: string; title: string; notes: string | null; tags: string[]; mime_type: string; created_at: string };
+type CloudVersion = { id: string; snapshot: Draft; version_note: string | null; created_at: string };
 type IdeaNote = { id: string; title: string; tags: string[]; createdAt: number; blob: Blob; };
 const HISTORY_KEY = "attikid.studio.song-desk.history.v1";
 const NOTES_DB = "attikid-studio-notes";
@@ -67,6 +68,7 @@ export default function SongDeskPage() {
   const [cloudVoiceNotes, setCloudVoiceNotes] = useState<CloudVoiceNote[]>([]);
   const [cloudVoiceStatus, setCloudVoiceStatus] = useState("");
   const [cloudVoiceUrl, setCloudVoiceUrl] = useState("");
+  const [cloudVersions, setCloudVersions] = useState<CloudVersion[]>([]);
   const [bpm, setBpm] = useState(84);
   const [rhymeMode, setRhymeMode] = useState("perfect");
   const supabase = useMemo(() => createClient(), []);
@@ -126,7 +128,25 @@ export default function SongDeskPage() {
     setCloudStatus("Loaded cloud draft: " + project.title);
   }
   async function signOut() { await supabase.auth.signOut(); setCloudUser(null); setCloudProjects([]); setCloudProjectId(null); localStorage.removeItem("attikid.studio.cloud-project-id"); setCloudStatus("Signed out. This browser’s local draft is unchanged."); }
-  function saveVersion() { const next = [{ id: crypto.randomUUID(), savedAt: Date.now(), draft: { ...draft, updatedAt: Date.now() } }, ...versions].slice(0, 30); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); setVersions(next); setHistoryStatus("Version saved on this device."); } catch { setHistoryStatus("Could not save a version. Browser storage may be full."); } }
+  function saveVersion() { const next = [{ id: crypto.randomUUID(), savedAt: Date.now(), draft: { ...draft, updatedAt: Date.now() } }, ...versions].slice(0, 30); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); setVersions(next); setHistoryStatus("Version saved on this device."); } catch { setHistoryStatus("Could not save a version. Browser storage may be full."); } if (cloudUser && cloudProjectId) void saveCloudVersion(); }
+  async function refreshCloudVersions() {
+    if (!cloudProjectId) return;
+    const response = await fetch("/api/studio/projects/"+encodeURIComponent(cloudProjectId)+"/versions",{cache:"no-store"});
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error||"Could not load cloud checkpoints.");
+    setCloudVersions((result.versions||[]) as CloudVersion[]);
+  }
+  async function saveCloudVersion() {
+    if (!cloudUser || !cloudProjectId) { setHistoryStatus("Save this project to the cloud first to enable cloud checkpoints."); return; }
+    try {
+      const response=await fetch("/api/studio/projects/"+encodeURIComponent(cloudProjectId)+"/versions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({snapshot:{...draft,updatedAt:Date.now()},version_note:"Manual Song Desk checkpoint"})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||"Cloud checkpoint failed.");
+      await refreshCloudVersions();
+      setHistoryStatus("Checkpoint saved to your ATTIKID cloud workspace.");
+    } catch(error) { setHistoryStatus(error instanceof Error?error.message:"Could not save cloud checkpoint."); }
+  }
+  function restoreCloudVersion(version:CloudVersion) { setDraft({...initial,...version.snapshot}); setHistoryStatus("Restored cloud checkpoint from "+new Date(version.created_at).toLocaleString()+"."); }
   function restoreVersion(version: SavedVersion) { setDraft({ ...version.draft }); setHistoryStatus("Restored a saved version. Save again to create a new checkpoint."); }
   async function saveRecordedIdea() { if (!recordingUrl) return; try { const response = await fetch(recordingUrl); const blob = await response.blob(); const note: IdeaNote = { id: crypto.randomUUID(), title: ideaTitle.trim() || "Untitled voice note", tags: ideaTags.split(",").map((tag) => tag.trim()).filter(Boolean).slice(0, 12), createdAt: Date.now(), blob }; await saveIdea(note); setIdeas(await listIdeas()); setIdeaStatus("Saved to this browser’s idea inbox."); } catch { setIdeaStatus("Could not save the voice note. Download it as a backup."); } }
   async function saveCloudVoiceNote() {
@@ -139,7 +159,7 @@ export default function SongDeskPage() {
       form.set("file", new File([blob], "voice-note."+ext, {type: blob.type || "audio/webm"}));
       form.set("title", ideaTitle.trim() || "Voice note");
       form.set("tags", ideaTags);
-      form.set("notes", draft.notes);
+      form.set("notes", draft.notes);\n      form.set("lyrics", draft.lyrics);
       const response = await fetch("/api/studio/voice-notes", {method:"POST",body:form});
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Upload failed.");
@@ -173,7 +193,7 @@ export default function SongDeskPage() {
         <label className={styles.label} htmlFor="lyrics">LYRIC PAD</label><textarea id="lyrics" className={styles.lyrics} value={draft.lyrics} onChange={(e)=>setDraft({...draft,lyrics:e.target.value})} placeholder={"Start with the line you can’t get out of your head…"} spellCheck/>
         <div className={styles.metrics}><div><strong>{lines.filter((line)=>line.trim()).length}</strong><span>LINES</span></div><div><strong>{average}</strong><span>AVG SYLLABLES</span></div><div><strong>{draft.lyrics.trim() ? draft.lyrics.trim().split(/\s+/).length : 0}</strong><span>WORDS</span></div></div>
         <div className={styles.cadence}><div className={styles.panelHead}><h2>Cadence scan</h2><span>ESTIMATES · REVIEW BY EAR</span></div><label className={styles.label} htmlFor="tempo-bpm">BEAT TEMPO (BPM)</label><input id="tempo-bpm" type="number" min="40" max="220" value={bpm} onChange={e=>setBpm(Math.min(220,Math.max(40,Number(e.target.value)||84)))} className={styles.titleInput}/><p className={styles.small}>At {bpm} BPM, one 4/4 bar lasts {(240/bpm).toFixed(2)} seconds. Line fit estimates use 16 syllables per bar; adjust by listening to the beat.</p>{lines.slice(0,16).map((line,i)=><div className={styles.cadenceRow} key={i}><span>{String(i+1).padStart(2,"0")}</span><div className={styles.barTrack}><div className={styles.bar} style={{width: Math.min(100, syllables[i]*5.5)+"%"}}/></div><strong>{syllables[i]}</strong><span>{syllables[i]?Math.max(1,Math.ceil(syllables[i]/16))+" bar"+(syllables[i]>16?"s":""):"—"}</span></div>)}</div>
-        <div className={styles.structure}><div className={styles.panelHead}><h2>Song structure</h2><span>{draft.sections.length} SECTIONS</span></div>{draft.sections.map((section,index)=><article className={styles.section} key={section.id}><div className={styles.sectionTop}><span>{String(index+1).padStart(2,"0")}</span><input value={section.kind} onChange={(e)=>updateSection(section.id,{kind:e.target.value})} aria-label={"Section "+(index+1)+" name"}/><button onClick={()=>deleteSection(section.id)} aria-label={"Remove "+section.kind}>×</button></div><textarea value={section.text} onChange={(e)=>updateSection(section.id,{text:e.target.value})} placeholder={"Write or move lyrics into this section…"} aria-label={section.kind+" lyrics"}/></article>)}<div className={styles.addButtons}>{["Verse","Hook","Bridge","Intro","Outro"].map((kind)=><button key={kind} onClick={()=>addSection(kind)}>+ {kind}</button>)}</div><div className={styles.history}><div className={styles.panelHead}><h2>Draft history</h2><button onClick={saveVersion}>SAVE VERSION +</button></div><p className={styles.small}>Create checkpoints before major rewrites. Up to 30 snapshots stay in this browser.</p>{historyStatus && <p className={styles.small}>{historyStatus}</p>}{versions.length === 0 ? <p className={styles.small}>No checkpoints yet.</p> : versions.map((version) => <div className={styles.historyItem} key={version.id}><span>{new Date(version.savedAt).toLocaleString()}</span><strong>{version.draft.title || "Untitled draft"}</strong><button onClick={() => restoreVersion(version)}>RESTORE</button></div>)}</div></div>
+        <div className={styles.structure}><div className={styles.panelHead}><h2>Song structure</h2><span>{draft.sections.length} SECTIONS</span></div>{draft.sections.map((section,index)=><article className={styles.section} key={section.id}><div className={styles.sectionTop}><span>{String(index+1).padStart(2,"0")}</span><input value={section.kind} onChange={(e)=>updateSection(section.id,{kind:e.target.value})} aria-label={"Section "+(index+1)+" name"}/><button onClick={()=>deleteSection(section.id)} aria-label={"Remove "+section.kind}>×</button></div><textarea value={section.text} onChange={(e)=>updateSection(section.id,{text:e.target.value})} placeholder={"Write or move lyrics into this section…"} aria-label={section.kind+" lyrics"}/></article>)}<div className={styles.addButtons}>{["Verse","Hook","Bridge","Intro","Outro"].map((kind)=><button key={kind} onClick={()=>addSection(kind)}>+ {kind}</button>)}</div><div className={styles.history}><div className={styles.panelHead}><h2>Draft history</h2><button onClick={saveVersion}>SAVE VERSION +</button></div><p className={styles.small}>Create checkpoints before major rewrites. Local checkpoints stay on this device; cloud checkpoints are available after saving a cloud project.</p>{historyStatus && <p className={styles.small}>{historyStatus}</p>}{versions.length === 0 ? <p className={styles.small}>No local checkpoints yet.</p> : versions.map((version) => <div className={styles.historyItem} key={version.id}><span>{new Date(version.savedAt).toLocaleString()}</span><strong>{version.draft.title || "Untitled draft"}</strong><button onClick={() => restoreVersion(version)}>RESTORE</button></div>)}{cloudUser&&cloudProjectId&&<><div className={styles.panelHead}><h2>Cloud checkpoints</h2><button onClick={()=>void refreshCloudVersions().catch(error=>setHistoryStatus(error.message))}>REFRESH</button></div>{cloudVersions.length===0?<p className={styles.small}>No cloud checkpoints loaded yet.</p>:cloudVersions.map(version=><div className={styles.historyItem} key={version.id}><span>{new Date(version.created_at).toLocaleString()}</span><strong>{version.snapshot.title||"Untitled draft"}{version.version_note?" · "+version.version_note:""}</strong><button onClick={()=>restoreCloudVersion(version)}>RESTORE</button></div>)}</>}</div></div>
       </div>
       <aside className={styles.sidebar}>
         <section className={styles.tool}><p className={styles.label}>01 / RHYME EXPLORER</p><h2>Find the sound.</h2><p>Try exact, near, consonant, or multi-syllable matches. Results are suggestions, not a substitute for hearing the rhyme in context.</p><label className={styles.label} htmlFor="rhyme-mode">MATCH TYPE</label><select id="rhyme-mode" value={rhymeMode} onChange={e=>setRhymeMode(e.target.value)} className={styles.notes}><option value="perfect">Perfect / end rhyme</option><option value="near">Near rhyme</option><option value="consonant">Consonant match</option><option value="multisyllabic">Multi-syllable suggestions</option></select><form onSubmit={(e)=>{e.preventDefault();void findRhymes();}}><input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Try: broken or take it back" aria-label="Word or phrase to rhyme" /><button disabled={rhyming||!query.trim()}>{rhyming?"SEARCHING…":"FIND RHYMES ↗"}</button></form><p className={styles.small}>For phonetic definitions, rhyme grouping, internal-rhyme highlighting, and deeper multisyllabic search, open the <Link href="/studio/tools/rhyme-finder" className={styles.textLink}>full Rhyme Finder ↗</Link>.</p>{rhymingError&&<p className={styles.error}>{rhymingError}</p>}<div className={styles.rhymeResults}>{rhymes.map((word)=><button key={word} onClick={()=>setDraft((d)=>({...d,lyrics:d.lyrics+(d.lyrics?"\n":"")+word}))}>{word}<span>+ add line</span></button>)}</div></section>
