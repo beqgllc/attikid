@@ -51,12 +51,16 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-[#11110f] text-[#e9e3d8] px-5 py-12">
       <div className="mx-auto w-full max-w-md">
-        <Link href="/" className="text-sm font-bold tracking-[.18em]">ATTIKID®</Link>
+        <Link href="/" className="text-sm font-bold tracking-[.18em]">
+          ATTIKID®
+        </Link>
+
         <p className="mt-16 text-xs tracking-[.2em] text-[#aaa49a]">STUDIO ACCESS</p>
         <h1 className="mt-4 text-5xl font-semibold tracking-[-.06em]">Sign in.</h1>
         <p className="mt-4 text-sm leading-6 text-[#aaa49a]">
           Your drafts and private voice notes stay attached to your account.
         </p>
+
         <form onSubmit={submit} className="mt-8 grid gap-4">
           <label className="grid gap-2 text-xs">
             <span>Email</span>
@@ -65,8 +69,8 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border border-[#..."
+              onChange={(event) => setEmail(event.target.value)}
+              className="border border-[#3a362f] bg-[#171510] px-3 py-2 text-sm text-[#e9e3d8] outline-none ring-0"
             />
           </label>
 
@@ -77,12 +81,16 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border border-[#..."
+              onChange={(event) => setPassword(event.target.value)}
+              className="border border-[#3a362f] bg-[#171510] px-3 py-2 text-sm text-[#e9e3d8] outline-none ring-0"
             />
           </label>
 
-          {message && <p role="alert" className="text-sm text-[#e6a28c]">{message}</p>}
+          {message && (
+            <p role="alert" className="text-sm text-[#e6a28c]">
+              {message}
+            </p>
+          )}
 
           <button
             disabled={busy}
