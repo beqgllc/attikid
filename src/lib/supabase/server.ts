@@ -34,9 +34,10 @@ export async function createClient() {
 export async function requireUser() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub;
-  if (error || typeof userId !== "string") throw new Error("Authentication required.");
-  return { supabase, userId, claims: data.claims };
+  const claims = data?.claims;
+  const userId = claims?.sub;
+  if (error || !claims || typeof userId !== "string") throw new Error("Authentication required.");
+  return { supabase, userId, claims };
 }
 
 export async function requireAdmin() {
