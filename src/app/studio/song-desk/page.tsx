@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./page.module.css";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 type Section = { id: string; kind: string; text: string };
 type Draft = { title: string; lyrics: string; sections: Section[]; notes: string; updatedAt: number };
@@ -71,7 +71,6 @@ export default function SongDeskPage() {
   const [cloudVersions, setCloudVersions] = useState<CloudVersion[]>([]);
   const [bpm, setBpm] = useState(84);
   const [rhymeMode, setRhymeMode] = useState("perfect");
-  const supabase = useMemo(() => createClient(), []);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   useEffect(() => {
@@ -84,6 +83,11 @@ export default function SongDeskPage() {
     } catch {}
     setLoaded(true);
     void listIdeas().then(setIdeas).catch(() => setIdeaStatus("Voice-note storage is unavailable in this browser."));
+    if (!isSupabaseConfigured()) {
+      setCloudStatus("Cloud sync is unavailable until Supabase environment variables are configured.");
+      return;
+    }
+    const supabase = createClient();
     void supabase.auth.getUser().then(async ({ data, error }) => {
       if (error || !data.user) return;
       setCloudUser(data.user.email ?? "Signed-in creator");
@@ -99,7 +103,7 @@ export default function SongDeskPage() {
       if (!session) { setCloudProjects([]); setCloudProjectId(null); localStorage.removeItem("attikid.studio.cloud-project-id"); }
     });
     return () => authListener.subscription.unsubscribe();
-  }, [supabase]);
+  }, []);
   useEffect(() => { if (!loaded) return; const id = window.setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ ...draft, updatedAt: Date.now() })); } catch {} }, 350); return () => window.clearTimeout(id); }, [draft, loaded]);
   const lines = useMemo(() => draft.lyrics.split("\n"), [draft.lyrics]);
   const syllables = useMemo(() => lines.map((line) => lineSyllables(line)), [lines]);
@@ -127,7 +131,7 @@ export default function SongDeskPage() {
     setDraft(next); setCloudProjectId(project.id); localStorage.setItem("attikid.studio.cloud-project-id", project.id);
     setCloudStatus("Loaded cloud draft: " + project.title);
   }
-  async function signOut() { await supabase.auth.signOut(); setCloudUser(null); setCloudProjects([]); setCloudProjectId(null); localStorage.removeItem("attikid.studio.cloud-project-id"); setCloudStatus("Signed out. This browser’s local draft is unchanged."); }
+  async function signOut() { await createClient().auth.signOut(); setCloudUser(null); setCloudProjects([]); setCloudProjectId(null); localStorage.removeItem("attikid.studio.cloud-project-id"); setCloudStatus("Signed out. This browser’s local draft is unchanged."); }
   function saveVersion() { const next = [{ id: crypto.randomUUID(), savedAt: Date.now(), draft: { ...draft, updatedAt: Date.now() } }, ...versions].slice(0, 30); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); setVersions(next); setHistoryStatus("Version saved on this device."); } catch { setHistoryStatus("Could not save a version. Browser storage may be full."); } if (cloudUser && cloudProjectId) void saveCloudVersion(); }
   async function refreshCloudVersions() {
     if (!cloudProjectId) return;
