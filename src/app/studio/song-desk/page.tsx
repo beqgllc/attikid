@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./page.module.css";
+import { createClient } from "@/lib/supabase/client";
 
 type Section = { id: string; kind: string; text: string };
 type Draft = { title: string; lyrics: string; sections: Section[]; notes: string; updatedAt: number };
 const KEY = "attikid.studio.song-desk.v1";
 type SavedVersion = { id: string; savedAt: number; draft: Draft };
+type CloudProject = { id: string; title: string; draft: Draft; updated_at: string };
 type IdeaNote = { id: string; title: string; tags: string[]; createdAt: number; blob: Blob; };
 const HISTORY_KEY = "attikid.studio.song-desk.history.v1";
 const NOTES_DB = "attikid-studio-notes";
@@ -56,13 +58,68 @@ export default function SongDeskPage() {
   const [ideaTags, setIdeaTags] = useState("hook, melody");
   const [ideaStatus, setIdeaStatus] = useState("");
   const [historyStatus, setHistoryStatus] = useState("");
+  const [cloudUser, setCloudUser] = useState<string | null>(null);
+  const [cloudProjects, setCloudProjects] = useState<CloudProject[]>([]);
+  const [cloudProjectId, setCloudProjectId] = useState<string | null>(null);
+  const [cloudStatus, setCloudStatus] = useState("");
+  const [cloudBusy, setCloudBusy] = useState(false);
+  const supabase = useMemo(() => createClient(), []);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
-  useEffect(() => { try { const raw = localStorage.getItem(KEY); if (raw) setDraft({ ...initial, ...JSON.parse(raw) }); const history = localStorage.getItem(HISTORY_KEY); if (history) setVersions(JSON.parse(history)); } catch {} setLoaded(true); void listIdeas().then(setIdeas).catch(() => setIdeaStatus("Voice-note storage is unavailable in this browser.")); }, []);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) setDraft({ ...initial, ...JSON.parse(raw) });
+      const history = localStorage.getItem(HISTORY_KEY);
+      if (history) setVersions(JSON.parse(history));
+      setCloudProjectId(localStorage.getItem("attikid.studio.cloud-project-id"));
+    } catch {}
+    setLoaded(true);
+    void listIdeas().then(setIdeas).catch(() => setIdeaStatus("Voice-note storage is unavailable in this browser."));
+    void supabase.auth.getUser().then(async ({ data, error }) => {
+      if (error || !data.user) return;
+      setCloudUser(data.user.email ?? "Signed-in creator");
+      try {
+        const response = await fetch("/api/studio/projects", { cache: "no-store" });
+        if (!response.ok) throw new Error("Could not load cloud projects.");
+        const result = await response.json() as { projects: CloudProject[] };
+        setCloudProjects(result.projects ?? []);
+      } catch { setCloudStatus("Signed in, but cloud drafts could not be loaded."); }
+    });
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCloudUser(session?.user?.email ?? null);
+      if (!session) { setCloudProjects([]); setCloudProjectId(null); localStorage.removeItem("attikid.studio.cloud-project-id"); }
+    });
+    return () => authListener.subscription.unsubscribe();
+  }, [supabase]);
   useEffect(() => { if (!loaded) return; const id = window.setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ ...draft, updatedAt: Date.now() })); } catch {} }, 350); return () => window.clearTimeout(id); }, [draft, loaded]);
   const lines = useMemo(() => draft.lyrics.split("\n"), [draft.lyrics]);
   const syllables = useMemo(() => lines.map((line) => lineSyllables(line)), [lines]);
   const average = useMemo(() => { const nonempty = syllables.filter((n) => n > 0); return nonempty.length ? (nonempty.reduce((a,b)=>a+b,0)/nonempty.length).toFixed(1) : "—"; }, [syllables]);
+  async function refreshCloudProjects() { const response = await fetch("/api/studio/projects", { cache: "no-store" }); if (!response.ok) throw new Error("Could not load cloud drafts."); const result = await response.json() as { projects: CloudProject[] }; setCloudProjects(result.projects ?? []); }
+  async function saveCloudDraft() {
+    if (!cloudUser) { setCloudStatus("Sign in to sync this draft across devices."); return; }
+    setCloudBusy(true); setCloudStatus("");
+    const payload = { title: draft.title.trim() || "Untitled draft", draft: { ...draft, updatedAt: Date.now() } };
+    try {
+      const url = cloudProjectId ? "/api/studio/projects/" + encodeURIComponent(cloudProjectId) : "/api/studio/projects";
+      const response = await fetch(url, { method: cloudProjectId ? "PATCH" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Cloud save failed.");
+      const project = result.project as CloudProject;
+      setCloudProjectId(project.id); localStorage.setItem("attikid.studio.cloud-project-id", project.id);
+      await refreshCloudProjects(); setCloudStatus("Saved to your ATTIKID account.");
+    } catch (error) { setCloudStatus(error instanceof Error ? error.message : "Cloud save failed."); }
+    finally { setCloudBusy(false); }
+  }
+  async function loadCloudDraft(id: string) {
+    const project = cloudProjects.find((item) => item.id === id);
+    if (!project) return;
+    const next = { ...initial, ...(project.draft as Draft), title: project.title };
+    setDraft(next); setCloudProjectId(project.id); localStorage.setItem("attikid.studio.cloud-project-id", project.id);
+    setCloudStatus("Loaded cloud draft: " + project.title);
+  }
+  async function signOut() { await supabase.auth.signOut(); setCloudUser(null); setCloudProjects([]); setCloudProjectId(null); localStorage.removeItem("attikid.studio.cloud-project-id"); setCloudStatus("Signed out. This browser’s local draft is unchanged."); }
   function saveVersion() { const next = [{ id: crypto.randomUUID(), savedAt: Date.now(), draft: { ...draft, updatedAt: Date.now() } }, ...versions].slice(0, 30); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); setVersions(next); setHistoryStatus("Version saved on this device."); } catch { setHistoryStatus("Could not save a version. Browser storage may be full."); } }
   function restoreVersion(version: SavedVersion) { setDraft({ ...version.draft }); setHistoryStatus("Restored a saved version. Save again to create a new checkpoint."); }
   async function saveRecordedIdea() { if (!recordingUrl) return; try { const response = await fetch(recordingUrl); const blob = await response.blob(); const note: IdeaNote = { id: crypto.randomUUID(), title: ideaTitle.trim() || "Untitled voice note", tags: ideaTags.split(",").map((tag) => tag.trim()).filter(Boolean).slice(0, 12), createdAt: Date.now(), blob }; await saveIdea(note); setIdeas(await listIdeas()); setIdeaStatus("Saved to this browser’s idea inbox."); } catch { setIdeaStatus("Could not save the voice note. Download it as a backup."); } }
@@ -76,7 +133,7 @@ export default function SongDeskPage() {
   return <main className={styles.page}>
     <header className={styles.nav}><Link href="/" className={styles.brand}>ATTIKID<span>®</span></Link><nav><Link href="/music-room">Music Room</Link><Link href="/songs">Songs</Link><Link href="/supply-shop">Shop</Link></nav></header>
     <div className={styles.topline}><span>STUDIO / SONG DESK</span><span>{loaded ? "AUTOSAVE · THIS DEVICE" : "LOADING DRAFT…"}</span></div>
-    <section className={styles.hero}><p>THE WRITING ROOM</p><h1>Get it down.<br/><em>Shape it later.</em></h1><p className={styles.deck}>A working space for unfinished thoughts. Your draft saves in this browser; no account required.</p></section>
+    <section className={styles.hero}><p>THE WRITING ROOM</p><h1>Get it down.<br/><em>Shape it later.</em></h1><p className={styles.deck}>A working space for unfinished thoughts. Your draft autosaves locally. Sign in to sync named projects across devices.</p></section>
     <section className={styles.workspace}>
       <div className={styles.editor}><label className={styles.label} htmlFor="song-title">PROJECT TITLE</label><input id="song-title" className={styles.titleInput} value={draft.title} onChange={(e)=>setDraft({...draft,title:e.target.value})} aria-label="Project title"/>
         <label className={styles.label} htmlFor="lyrics">LYRIC PAD</label><textarea id="lyrics" className={styles.lyrics} value={draft.lyrics} onChange={(e)=>setDraft({...draft,lyrics:e.target.value})} placeholder={"Start with the line you can’t get out of your head…"} spellCheck/>
@@ -87,7 +144,8 @@ export default function SongDeskPage() {
       <aside className={styles.sidebar}>
         <section className={styles.tool}><p className={styles.label}>01 / RHYME EXPLORER</p><h2>Find the sound.</h2><p>Look up end rhymes for the last word you enter. Results come from Datamuse; judge pronunciation and fit yourself.</p><form onSubmit={(e)=>{e.preventDefault();void findRhymes();}}><input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Try: broken" aria-label="Word to rhyme" /><button disabled={rhyming||!query.trim()}>{rhyming?"SEARCHING…":"FIND RHYMES ↗"}</button></form>{rhymingError&&<p className={styles.error}>{rhymingError}</p>}<div className={styles.rhymeResults}>{rhymes.map((word)=><button key={word} onClick={()=>setDraft((d)=>({...d,lyrics:d.lyrics+(d.lyrics?"\n":"")+word}))}>{word}<span>+ add line</span></button>)}</div></section>
         <section className={styles.tool}><p className={styles.label}>02 / IDEA INBOX</p><h2>Catch it before it goes.</h2><p>Record a melody, rough hook, or passing thought. The audio stays in this browser session unless you download it.</p><button className={styles.recordButton} onClick={()=>void toggleRecording()}>{recording?"■ STOP RECORDING":"● RECORD A NOTE"}</button>{recording&&<p className={styles.recording}>RECORDING IN PROGRESS</p>}{recordingError&&<p className={styles.error}>{recordingError}</p>}{recordingUrl&&<div className={styles.audio}><audio controls src={recordingUrl}/><a href={recordingUrl} download="attikid-voice-note.webm">Download voice note ↗</a><label className={styles.label} htmlFor="idea-title">NOTE TITLE</label><input id="idea-title" value={ideaTitle} onChange={(e)=>setIdeaTitle(e.target.value)} /><label className={styles.label} htmlFor="idea-tags">TAGS · COMMA SEPARATED</label><input id="idea-tags" value={ideaTags} onChange={(e)=>setIdeaTags(e.target.value)} /><button className={styles.export} onClick={()=>void saveRecordedIdea()}>SAVE TO IDEA INBOX</button></div>}{ideaStatus&&<p className={styles.small}>{ideaStatus}</p>}<div className={styles.ideaList}><p className={styles.label}>SAVED IDEAS · THIS DEVICE</p>{ideas.length===0?<p className={styles.small}>Your saved voice notes will appear here.</p>:ideas.map((idea)=><article className={styles.ideaItem} key={idea.id}><button className={styles.ideaTitle} onClick={()=>openIdea(idea)}>{idea.title}</button><p>{idea.tags.map((tag)=>"#"+tag).join(" ")}</p><div><button onClick={()=>openIdea(idea)}>OPEN</button><button onClick={()=>void deleteIdea(idea.id)}>DELETE</button></div></article>)}</div></section>
-        <section className={styles.tool}><p className={styles.label}>03 / WORKING NOTES</p><h2>Leave yourself a note.</h2><textarea className={styles.notes} value={draft.notes} onChange={(e)=>setDraft({...draft,notes:e.target.value})} placeholder="Reference, feeling, beat idea, next step…"/><p className={styles.small}>Draft and notes are saved to local browser storage. They do not sync across devices.</p><button className={styles.export} onClick={()=>{const blob=new Blob([JSON.stringify(draft,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(draft.title||"attikid-draft").toLowerCase().replace(/[^a-z0-9]+/g,"-")+".json";a.click();URL.revokeObjectURL(url);}}>EXPORT DRAFT JSON ↓</button></section>
+        <section className={styles.tool}><p className={styles.label}>03 / CLOUD WORKSPACE</p><h2>Your work, wherever you are.</h2>{cloudUser ? <><p>Signed in as {cloudUser}. Cloud drafts are private to your account.</p><button className={styles.export} onClick={()=>void saveCloudDraft()} disabled={cloudBusy}>{cloudBusy ? "SAVING…" : cloudProjectId ? "UPDATE CLOUD DRAFT ↗" : "SAVE TO CLOUD ↗"}</button><button className={styles.export} onClick={()=>void refreshCloudProjects().then(()=>setCloudStatus("Cloud drafts refreshed.")).catch(()=>setCloudStatus("Could not refresh cloud drafts."))}>REFRESH CLOUD DRAFTS</button><div className={styles.ideaList}><p className={styles.label}>YOUR CLOUD DRAFTS</p>{cloudProjects.length===0?<p className={styles.small}>No cloud drafts yet. Save this draft to create one.</p>:cloudProjects.map((project)=><article className={styles.ideaItem} key={project.id}><button className={styles.ideaTitle} onClick={()=>void loadCloudDraft(project.id)}>{project.title}</button><p>{new Date(project.updated_at).toLocaleString()}</p><div><button onClick={()=>void loadCloudDraft(project.id)}>OPEN</button><button onClick={()=>{setCloudProjectId(project.id);localStorage.setItem("attikid.studio.cloud-project-id",project.id);setCloudStatus("Selected "+project.title+". Save to update it.");}}>SELECT TO UPDATE</button></div></article>)}</div><button className={styles.export} onClick={()=>void signOut()}>SIGN OUT</button></> : <><p>Sign in or create an account to sync drafts and private voice notes between devices.</p><div className={styles.addButtons}><Link href="/login">SIGN IN ↗</Link><Link href="/signup">CREATE ACCOUNT ↗</Link></div></>}{cloudStatus&&<p role="status" className={styles.small}>{cloudStatus}</p>}</section>
+        <section className={styles.tool}><p className={styles.label}>04 / WORKING NOTES</p><h2>Leave yourself a note.</h2><textarea className={styles.notes} value={draft.notes} onChange={(e)=>setDraft({...draft,notes:e.target.value})} placeholder="Reference, feeling, beat idea, next step…"/><p className={styles.small}>Draft and notes are saved to local browser storage. They do not sync across devices.</p><button className={styles.export} onClick={()=>{const blob=new Blob([JSON.stringify(draft,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(draft.title||"attikid-draft").toLowerCase().replace(/[^a-z0-9]+/g,"-")+".json";a.click();URL.revokeObjectURL(url);}}>EXPORT DRAFT JSON ↓</button></section>
       </aside>
     </section><footer className={styles.footer}><Link href="/studio">ALL STUDIO TOOLS ↗</Link><span>UNFINISHED IS A VALID PLACE TO START.</span></footer>
   </main>;
