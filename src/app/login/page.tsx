@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const supabase = createClient();
   const router = useRouter();
   const params = useSearchParams();
   const requestedNext = params.get("next");
@@ -18,6 +17,8 @@ export default function LoginPage() {
 
   async function submit(event: FormEvent) {
     event.preventDefault(); setBusy(true); setMessage("");
+    if (!isSupabaseConfigured()) { setBusy(false); setMessage("Authentication is not configured on this deployment yet."); return; }
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
     if (error) { setMessage(error.message); return; }
