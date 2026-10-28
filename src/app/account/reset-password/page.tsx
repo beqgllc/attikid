@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function ResetPasswordPage() {
-  const supabase = createClient();
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   async function submit(event: FormEvent) {
     event.preventDefault(); setBusy(true); setMessage("");
+    if (!isSupabaseConfigured()) { setBusy(false); setMessage("Authentication is not configured on this deployment yet."); return; }
+    const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
     if (error) { setMessage(error.message); return; }
