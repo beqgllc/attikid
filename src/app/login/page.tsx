@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
-  const params = useSearchParams();
-  const requestedNext = params.get("next");
-  const next = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/studio/song-desk";
+  const [next, setNext] = useState("/studio/song-desk");
+  useEffect(() => {
+    const requestedNext = new URLSearchParams(window.location.search).get("next");
+    if (requestedNext?.startsWith("/") && !requestedNext.startsWith("//")) setNext(requestedNext);
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
