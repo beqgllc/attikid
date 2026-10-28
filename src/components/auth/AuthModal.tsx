@@ -3,6 +3,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import "./auth-modal.css";
 
 type AuthMode = "signin" | "signup";
 
@@ -37,7 +38,7 @@ export function AuthModal() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") close();
+      if (event.key === "Escape") setOpen(false);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => {
