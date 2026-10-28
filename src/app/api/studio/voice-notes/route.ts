@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
   const titleValue = form.get("title");
   const tagsValue = form.get("tags");
   const notesValue = form.get("notes");
+  const lyricsValue = form.get("lyrics");
   if (!(file instanceof File)) return fail("A voice-note audio file is required.", 400);
   const mime = file.type.toLowerCase().split(";")[0];
   if (!allowed.has(mime)) return fail("Unsupported audio format. Use WebM, OGG, MP4/M4A, MP3, WAV, AAC, or 3GP.", 415);
@@ -38,13 +39,14 @@ export async function POST(request: NextRequest) {
   const title = typeof titleValue === "string" ? titleValue.trim().slice(0, 160) : "Voice note";
   const tags = typeof tagsValue === "string" ? [...new Set(tagsValue.split(",").map((tag) => tag.trim().replace(/^#/, "").slice(0, 32)).filter(Boolean))].slice(0, 12) : [];
   const notes = typeof notesValue === "string" ? notesValue.slice(0, 2000) : "";
+  const lyrics = typeof lyricsValue === "string" ? lyricsValue.slice(0, 20000) : "";
   const ext = mime === "audio/mpeg" ? "mp3" : mime === "audio/mp4" ? "m4a" : mime === "audio/ogg" ? "ogg" : mime === "audio/wav" || mime === "audio/x-wav" ? "wav" : mime === "audio/aac" ? "aac" : mime === "audio/3gpp" ? "3gp" : "webm";
   const id = crypto.randomUUID();
   const storagePath = userId + "/" + id + "." + ext;
   const { error: uploadError } = await supabase.storage.from(bucket).upload(storagePath, file, { contentType: mime, upsert: false });
   if (uploadError) return fail("Could not upload voice note. Check that the private storage bucket and owner policies are configured.", 500);
   const { data, error } = await supabase.from("studio_voice_notes").insert({
-    id, user_id: userId, title: title || "Voice note", notes, tags, storage_path: storagePath,
+    id, user_id: userId, title: title || "Voice note", notes, lyrics, tags, storage_path: storagePath,
     mime_type: mime, duration_seconds: null,
   }).select("id,title,notes,tags,storage_path,mime_type,duration_seconds,created_at").single();
   if (error) {
