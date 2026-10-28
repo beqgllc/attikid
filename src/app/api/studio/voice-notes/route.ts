@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   if (file.size <= 0 || file.size > maxBytes) return fail("Voice notes must be between 1 byte and 25 MB.", 413);
   const title = typeof titleValue === "string" ? titleValue.trim().slice(0, 160) : "Voice note";
   const tags = typeof tagsValue === "string" ? [...new Set(tagsValue.split(",").map((tag) => tag.trim().replace(/^#/, "").slice(0, 32)).filter(Boolean))].slice(0, 12) : [];
-  const notes = typeof notesValue === "string" ? notesValue.slice(0, 2000) : null;
+  const notes = typeof notesValue === "string" ? notesValue.slice(0, 2000) : "";
   const ext = mime === "audio/mpeg" ? "mp3" : mime === "audio/mp4" ? "m4a" : mime === "audio/ogg" ? "ogg" : mime === "audio/wav" || mime === "audio/x-wav" ? "wav" : mime === "audio/aac" ? "aac" : mime === "audio/3gpp" ? "3gp" : "webm";
   const id = crypto.randomUUID();
   const storagePath = userId + "/" + id + "." + ext;
