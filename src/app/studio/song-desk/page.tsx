@@ -159,7 +159,8 @@ export default function SongDeskPage() {
       form.set("file", new File([blob], "voice-note."+ext, {type: blob.type || "audio/webm"}));
       form.set("title", ideaTitle.trim() || "Voice note");
       form.set("tags", ideaTags);
-      form.set("notes", draft.notes);\n      form.set("lyrics", draft.lyrics);
+      form.set("notes", draft.notes);
+      form.set("lyrics", draft.lyrics);
       const response = await fetch("/api/studio/voice-notes", {method:"POST",body:form});
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Upload failed.");
