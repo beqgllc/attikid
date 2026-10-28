@@ -16,7 +16,7 @@ export default async function MusicRoomPage() {
   const { data: sessionData } = await supabase.from("listening_sessions")
     .select("id,title,slug,description,editorial_note,sort_order,published_at,listening_session_tracks(position,curator_note,songs(title,artist_name,slug),song_versions(title,version_type,story,songs(title,artist_name,slug)))")
     .eq("is_published", true).order("sort_order", { ascending: true });
-  const sessions = (sessionData ?? []) as Array<{
+  const sessions = (sessionData ?? []) as unknown as Array<{
     id: string; title: string; slug: string; description: string | null; editorial_note: string | null;
     listening_session_tracks?: Array<{
       position: number; curator_note: string | null;
@@ -27,7 +27,7 @@ export default async function MusicRoomPage() {
   const { data: versionData } = await supabase.from("song_versions")
     .select("id,title,version_type,story,sort_order,songs(title,artist_name,slug)")
     .eq("is_public", true).order("sort_order", { ascending: true }).limit(30);
-  const versions = (versionData ?? []) as Array<{
+  const versions = (versionData ?? []) as unknown as Array<{
     id: string; title: string; version_type: string; story: string | null; sort_order: number;
     songs?: { title: string; artist_name: string; slug: string } | null;
   }>;
