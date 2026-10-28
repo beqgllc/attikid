@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { footerCopy } from "@/content/site";
+import { AuthModal } from "@/components/auth/AuthModal";
 
 type SiteLink = {
   label: string;
@@ -61,7 +62,14 @@ export function SiteHeader({
     <header className="ak-header">
       {musicNavigation ? musicLinks : links(leftLinks, "Main navigation", "ak-nav ak-nav--left")}
       <AttikidLogo />
-      {links(rightLinks, "More navigation", "ak-nav ak-nav--right")}
+      <nav aria-label="More navigation" className="ak-nav ak-nav--right">
+        {rightLinks.map((item) => (
+          <Link href={item.href} key={item.label}>
+            {item.label}
+          </Link>
+        ))}
+        <AuthModal />
+      </nav>
     </header>
   );
 }
