@@ -184,3 +184,107 @@
 @media (prefers-reduced-motion: reduce) {
   .ak-auth-overlay, .ak-auth-dialog { animation: none; }
 }
+
+
+/* Registration benefits and signed-in account state */
+.ak-auth-perks {
+  margin: 0 0 1.25rem;
+  padding: 1rem 1rem .9rem;
+  border: 1px solid #393833;
+  background: #171613;
+}
+.ak-auth-perks > p {
+  margin: 0 0 .75rem;
+  color: var(--ak-accent);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+}
+.ak-auth-perks ul {
+  display: grid;
+  gap: .72rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ak-auth-perks li {
+  display: grid;
+  gap: .15rem;
+  padding-left: .85rem;
+  border-left: 2px solid #ff4e008a;
+}
+.ak-auth-perks li strong {
+  color: #f1ece3;
+  font-size: .69rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.ak-auth-perks li span {
+  color: #aaa49a;
+  font-size: .64rem;
+  line-height: 1.45;
+}
+.ak-auth-perks small {
+  display: block;
+  margin-top: .9rem;
+  padding-top: .7rem;
+  border-top: 1px solid #393833;
+  color: #b7b1a8;
+  font-size: .61rem;
+  line-height: 1.5;
+}
+.ak-auth-resend {
+  min-height: 40px;
+  border: 1px solid #67503f;
+  color: #e9e3d8;
+  background: #211b16;
+  cursor: pointer;
+  font: inherit;
+  font-size: .61rem;
+  font-weight: 650;
+  letter-spacing: .1em;
+}
+.ak-auth-resend:hover { border-color: var(--ak-accent); color: var(--ak-accent); }
+.ak-auth-resend:disabled { cursor: wait; opacity: .6; }
+.ak-auth-account {
+  display: grid;
+  gap: .35rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #393833;
+  background: #171613;
+}
+.ak-auth-account span {
+  color: var(--ak-accent);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+.ak-auth-account strong {
+  overflow-wrap: anywhere;
+  color: #eee9e0;
+  font-size: .82rem;
+  font-weight: 500;
+}
+.ak-auth-account-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.ak-auth-signout {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  margin-top: .8rem;
+  border: 1px solid #393833;
+  color: #aaa49a;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .12em;
+}
+.ak-auth-signout:hover { border-color: #8e5a48; color: #e6a28c; }
+.ak-auth-signout:disabled { cursor: wait; opacity: .6; }
